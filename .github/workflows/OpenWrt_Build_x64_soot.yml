@@ -454,7 +454,7 @@ jobs:
 # //////////////////////////////////////////////////////////////////////////////////////////////
   Cleaning:
     if: ${{ always() }}
-    needs: [Checka,OpenWrt_Build_x64_all, OpenWrt_Build_x64_soot, OpenWrt_Build_x64_gxnas, OpenWrt_Build_x64_soot]
+    needs: [Checka,Build_x64_soot]
     runs-on: ubuntu-latest
     steps:
     - name: Delete workflow runs
