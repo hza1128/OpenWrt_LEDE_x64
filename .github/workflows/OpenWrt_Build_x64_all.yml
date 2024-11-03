@@ -385,3 +385,24 @@ jobs:
           hash: ${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
           📍: https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.TAG }}_Docker_${{ env.KERNEL }}
+# //////////////////////////////////////////////////////////////////////////////////////////////
+  Cleaning:
+    if: ${{ always() }}
+    needs: [Checka,Build_x64_all]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Delete workflow runs
+      uses: Jejz168/delete-workflow-runs@main
+      with:
+        retain_days: 30
+        keep_minimum_runs: 8
+
+    - name: Remove old Releases
+      uses: Jejz168/delete-older-releases@master
+      if: env.UPLOAD_RELEASE == 'true' 
+      with:
+        keep_latest: 86
+        delete_tags: true
+        delete_tag_pattern: _
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
