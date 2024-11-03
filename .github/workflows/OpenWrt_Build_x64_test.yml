@@ -79,7 +79,7 @@ jobs:
       run: |
         echo ${{ steps.getHash.outputs.commitHash_x86-op23 }} | tee .commitHash_x86-op23
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-Build_x86_64_66:
+  Build_x64_test:
     needs: [Checka]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
@@ -282,7 +282,7 @@ Build_x86_64_66:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-66-config
+        name: OpenWrt_x64_test.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -305,7 +305,7 @@ Build_x86_64_66:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_x64_test-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -313,10 +313,10 @@ Build_x86_64_66:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}」固件
+        name: OpenWrt_x64_test
         allowUpdates: true
         removeArtifacts: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: OpenWrt_x64_test
         token: ${{ secrets.GH_TOKEN }}
         body: |
           **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
@@ -387,7 +387,7 @@ Build_x86_64_66:
 # //////////////////////////////////////////////////////////////////////////////////////////////
   Cleaning:
     if: ${{ always() }}
-    needs: [Checka,Build_x86_64_54,Build_x86_64_515,Build_x86_64_61,Build_x86_64_66]
+    needs: [Checka,Build_x64_test]
     runs-on: ubuntu-latest
     steps:
     - name: Delete workflow runs
