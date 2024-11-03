@@ -381,10 +381,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_test固件-${{ env.DATE }} 🐳「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}
+        name: OpenWrt_x64_test
         allowUpdates: true
         removeArtifacts: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: OpenWrt_x64_test
         token: ${{ secrets.GH_TOKEN }}
         body: |
           **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
