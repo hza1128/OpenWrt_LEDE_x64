@@ -79,76 +79,8 @@ jobs:
       run: |
         echo ${{ steps.getHash.outputs.commitHash_x86 }} | tee .commitHash_x86
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  job_init: 
-    runs-on: ubuntu-latest
-    name: Build-Init
-    outputs:
-      output_release_tag: ${{ steps.gen_release_tag.outputs.release_tag }}
-    steps:
-      - name: Generate Tag Name
-        id: gen_release_tag
-        run: |
-          sudo timedatectl set-timezone "$TZ"
-          sudo mkdir -p /workdir
-          sudo chown $USER:$GROUPS /workdir
-
-      - name: Checkout
-        uses: actions/checkout@main
-
-      - name: Clone Source Code
-        working-directory: /workdir
-        run: |
-          git clone $REPO_URL -b $REPO_BRANCH openwrt
-          ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-
-      - name: Load Custom Feeds
-        run: |
-          [ -e $FEEDS_CONF ] && cp -r $FEEDS_CONF openwrt/feeds.conf.default
-          chmod +x $DIY_P1_SH
-          cd openwrt
-          $GITHUB_WORKSPACE/$DIY_P1_SH
-
-      - name: Update Feeds
-        run: cd openwrt && ./scripts/feeds update -a
-
-      - name: Install Feeds
-        run: cd openwrt && ./scripts/feeds install -a
-
-      - name: Make Defconfig Custom Configuration
-        run: |
-          chmod +x $DIY_P2_SH
-          cd openwrt
-          $GITHUB_WORKSPACE/$DIY_P2_SH
-          
-          cd ..
-          platforms=(x86 x86-docker)
-          for i in "${platforms[@]}"; do
-            [ -e $CONFIGS/$i.config ] && cp -r $CONFIGS/$i.config openwrt/.config
-            cd openwrt
-            echo ""
-            echo "make defconfig for $i platform....."
-            echo "result:"
-            make defconfig
-            cd ..
-            cp -f openwrt/.config $CONFIGS/$i.config
-          done
-          cd openwrt
-          rm -rf .config
-          echo "COMMIT_TIME=auto update config: $(date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
-
-      - name: Git Auto Update Config
-        uses: stefanzweifel/git-auto-commit-action@v5.0.0
-        id: commit
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          commit_message: ${{ env.COMMIT_TIME }}
-          branch: main
-          commit_author: Jejz168 <Jejz168@foxmail.com>
-          add_options: '-u'
-# /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_wjq:
-    needs: [Checka,job_init]
+    needs: [Checka]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
 
