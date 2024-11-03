@@ -80,7 +80,7 @@ jobs:
         echo ${{ steps.getHash.outputs.commitHash_x86-op23 }} | tee .commitHash_x86-op23
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
 Build_x86_64_66:
-    needs: [Checka,Build_x86_64_66]
+    needs: [Checka]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
 
