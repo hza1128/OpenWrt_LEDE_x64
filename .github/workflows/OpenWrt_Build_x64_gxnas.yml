@@ -381,10 +381,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_gxnas固件-${{ env.DATE }} 🐳「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}
+        name: OpenWrt_x64_gxnas
         allowUpdates: true
         removeArtifacts: true
-        tag: ${{ env.TAG }}_${{ env.KERNEL }}
+        tag: OpenWrt_x64_gxnas
         token: ${{ secrets.GH_TOKEN }}
         body: |
           **This is OpenWet Firmware for ${{ env.FILE_NAME }}**
