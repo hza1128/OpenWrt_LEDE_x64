@@ -314,10 +314,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_all固件-${{ env.DATE }} 🐳「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}
+        name: OpenWrt_x64_all
         allowUpdates: true
         removeArtifacts: true
-        tag: OpenWrt_x64_all-${{ env.TAG }}_${{ env.KERNEL }}
+        tag: OpenWrt_x64_all
         token: ${{ secrets.GH_TOKEN }}
         body: |
           **This is OpenWrt Firmware for ${{ env.FILE_NAME }}**
