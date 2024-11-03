@@ -13,7 +13,7 @@ on:
       checkupdates66:
         description: 'Checkupdates66 connection to Actions'
         required: false
-        default: 'false'
+        default: 'true'
       ssh66:
         description: 'SSH66 connection to Actions'
         required: false
