@@ -171,7 +171,7 @@ jobs:
           commit_author: 3092099 <122336705+3092099@users.noreply.github.com>
           add_options: '-u'
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_5.4:
+  Build_x64_temp_54:
     needs: [Checka,job_init]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
     runs-on: ubuntu-22.04
@@ -471,7 +471,7 @@ jobs:
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_5.15:
+  Build_x64_temp_515:
     needs: [Checka,job_init]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates515 == 'true'}}
     runs-on: ubuntu-22.04
@@ -768,7 +768,7 @@ jobs:
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_6.1X:
+  Build_x64_temp_61X:
     needs: [Checka,job_init]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates61 == 'true'}}
     runs-on: ubuntu-22.04
@@ -1068,7 +1068,7 @@ jobs:
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
 # //////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_6.6X:
+  Build_x64_temp_66X:
     needs: [Checka,job_init]
     if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
