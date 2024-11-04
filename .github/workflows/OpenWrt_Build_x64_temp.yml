@@ -639,9 +639,9 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_5.15_temp-${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}
+        name: OpenWrt_x64_515_temp-${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}
         allowUpdates: true
-        tag: OpenWrt_x64_5.15_temp
+        tag: OpenWrt_x64_515_temp
         token: ${{ secrets.GH_TOKEN }}
         body: |
             ### 📒 固件信息
