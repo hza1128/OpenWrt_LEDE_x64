@@ -639,10 +639,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_temp_5.15
+        name: OpenWrt_x64_5.15_temp
         allowUpdates: true
         removeArtifacts: true
-        tag: OpenWrt_x64_test
+        tag: OpenWrt_x64_5.15_temp
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
@@ -933,10 +933,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_temp_6.1X
+        name: OpenWrt_x64_6.1X_temp
         allowUpdates: true
         removeArtifacts: true
-        tag: OpenWrt_x64_temp_6.1X
+        tag: OpenWrt_x64_6.1X_temp
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
