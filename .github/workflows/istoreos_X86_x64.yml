@@ -4,7 +4,7 @@
 # By：GXNAS
 #===============================================
 
-name: Oistoreos_X86_x64
+name: istoreos_X86_x64
 
 on:
   repository_dispatch:
