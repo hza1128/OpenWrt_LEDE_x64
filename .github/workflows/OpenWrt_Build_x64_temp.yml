@@ -933,12 +933,13 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_6.1X_temp
+        name: OpenWrt_x64_temp_6.1X
         allowUpdates: true
-        tag: OpenWrt_x64_6.1X_temp
+        removeArtifacts: true
+        tag: OpenWrt_x64_temp_6.1X
         token: ${{ secrets.GH_TOKEN }}
         body: |
-           ### 📒 固件信息
+          ### 📒 固件信息
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.FILE_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
