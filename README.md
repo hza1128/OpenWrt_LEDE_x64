@@ -2,8 +2,11 @@
 <img width="768" src="https://cdn.jsdelivr.net/gh/Jejz168/Picture/OpenWrt-logo.png"/>
 <h1>OpenWrt_Build_x64</h1>
 </div>
-## 编译状态：
+
+## 当前编译状态：
+
 # ==============================
+
 <a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml">
     <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml/badge.svg?style=flat" />
 </a>
@@ -28,7 +31,7 @@
     <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml/badge.svg?style=flat" />
 </a>
 
-
+# ==============================
 
 ## 项目说明 [![](https://img.shields.io/badge/-项目基本介绍-FFFFFF.svg)](#项目说明-)
 - 固件来源：[![Lean](https://img.shields.io/badge/Lede-Lean-red.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
