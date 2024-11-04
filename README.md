@@ -23,8 +23,8 @@
 - 🔴x86[精简版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
 -  本库编译的x86固件为squashfs格式；
 -  ext4 与squashfs 格式的区别： ext4 格式的rootfs 可以扩展磁盘空间大小，而squashfs 不能。 squashfs 格式的rootfs 可以使用重置功能（恢复出厂设置），而ext4 不能。
--  默认的固件容量：Kernel=32M，rootfs=968M)；
--  升级方法：下载好对应的版本（.img.gz），然后在（openwrt-系统-备份/升级） *直接选择，不用解压；
+-  默认的固件容量：Kernel=32M、rootfs=968M，请确保你的OpenWrt硬盘空间至少要有1G以上；
+-  升级方法：下载好对应版本的.img.gz文件到电脑上，不需要解压，然后在你的OpenWrt菜单“系统-备份/升级”直接选择下载好的.img.gz文件上传，刷写固件；
 - 🛑******建议全新刷机可获得最佳的体验******
 
 ## 插件预览 [![](https://github.com/3092099/OpenWrt_Build_x64/blob/main/personal/preview.svg)](#插件预览-)
