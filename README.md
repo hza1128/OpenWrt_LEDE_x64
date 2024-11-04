@@ -1,5 +1,5 @@
 <div align="center">
-<img width="768" src="https://cdn.jsdelivr.net/gh/Jejz168/Picture/OpenWrt-logo.png"/>
+<img width="768" src="https://github.com/3092099/OpenWrt_Build_x64/blob/main/personal/logo.png"/>
 <h1>OpenWrt_Build_x64</h1>
 </div>
 
@@ -14,7 +14,7 @@
 
 </br>
 
-## 项目说明 [![](https://img.shields.io/badge/-项目基本介绍-FFFFFF.svg)](#项目说明-)
+## 项目说明 [![](https://github.com/3092099/OpenWrt_Build_x64/blob/main/personal/describes.svg)](#项目说明-)
 - 固件来源：[![Lean](https://img.shields.io/badge/Lede-Lean-red.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
 - 项目使用 Github Actions 拉取 [Lean](https://github.com/coolsnowwolf/lede) 的 `Openwrt` 源码仓库进行云编译
 - 🔴x86[全功能版] 固件默认的IP地址：`192.168.18.1` 默认密码：`无密码`
@@ -27,7 +27,7 @@
 -  升级方法：下载好对应的版本（.img.gz），然后在（openwrt-系统-备份/升级） *直接选择，不用解压；
 - 🛑******建议全新刷机可获得最佳的体验******
 
-## 插件预览 [![](https://img.shields.io/badge/-固件插件及功能预览-FFFFFF.svg)](#插件预览-)
+## 插件预览 [![](https://github.com/3092099/OpenWrt_Build_x64/blob/main/personal/preview.svg)](#插件预览-)
 <details>
 <summary><b>&nbsp; 插件预览</b></summary>
 <br/>
@@ -146,5 +146,5 @@
 </details>
 
 <a href="#readme">
-<img src="https://img.shields.io/badge/-返回顶部-FFFFFF.svg" title="返回顶部" align="right"/>
+<img src="https://github.com/3092099/OpenWrt_Build_x64/blob/main/personal/return.svg" title="返回顶部" align="right"/>
 </a>
