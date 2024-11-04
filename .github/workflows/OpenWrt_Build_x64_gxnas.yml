@@ -275,7 +275,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
@@ -319,22 +319,16 @@ jobs:
         tag: OpenWrt_x64_gxnas
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet Firmware for ${{ env.FILE_NAME }}**
           ### 📒 固件信息
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.FILE_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.18.1
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }} 
-          - 内容: ${{ env.commit }}        
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 hash哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Completion time 
@@ -354,15 +348,11 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ ${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
+          ♨️ 🐳${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
           开始时间：${{ env.DATE }}
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
-          🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
-          时间: ${{ env.date }}
-          内容: ${{ env.commit }}
-          hash: ${{ env.hash }}
+          hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
           📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}_${{ env.KERNEL }}
 
@@ -372,35 +362,10 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ ${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
+          ♨️ 🐳${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
           开始时间：${{ env.DATE }}
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
-          🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
-          时间: ${{ env.date }}
-          内容: ${{ env.commit }}
-          hash: ${{ env.hash }}
+          hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
           📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}_${{ env.KERNEL }}
-# //////////////////////////////////////////////////////////////////////////////////////////////
-  Cleaning:
-    if: ${{ always() }}
-    needs: [Checka,Build_x64_gxnas]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Delete workflow runs
-      uses: Jejz168/delete-workflow-runs@main
-      with:
-        retain_days: 30
-        keep_minimum_runs: 8
-
-    - name: Remove old Releases
-      uses: Jejz168/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' 
-      with:
-        keep_latest: 86
-        delete_tags: true
-        delete_tag_pattern: _
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
