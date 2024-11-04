@@ -32,11 +32,11 @@ env:
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: true
-  UPLOAD_FIRMWARE: false
-  UPLOAD_RELEASE: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
-  FILE_NAME: x64_test
-  PRODUCT_NAME: x86_64
+  FILE_NAME: OpenWrt_Build_x64_test
+  PRODUCT_NAME: OpenWrt_Build_x64_test
 
 jobs:
   Checka:
@@ -53,20 +53,20 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL_Lede -b $REPO_BRANCH_Lede $REPO_PATH_Lede
         cd $REPO_PATH_Lede
-        echo "commitHash_x86-op23=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        echo "commitHash_x64_test=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         cd
 
     - name: Show Commit Head and Combination Heads
       id: combHeader
       run: |
-        echo "commitHash_x86-op23: ${{ steps.getHash.outputs.commitHash_x86-op23 }}"
+        echo "commitHash_x64_test: ${{ steps.getHash.outputs.commitHash_x64_test }}"
 
     - name: Compare Commit Hash
       id: cacheHash
       uses: actions/cache@main
       with:
-        path: .commitHash_x86-op23
-        key: HEAD-${{ steps.getHash.outputs.commitHash_x86-op23 }}
+        path: .commitHash_x64_test
+        key: HEAD-${{ steps.getHash.outputs.commitHash_x64_test }}
 
     - name: Set output for next job
       id: outputunifreq
@@ -77,7 +77,7 @@ jobs:
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
-        echo ${{ steps.getHash.outputs.commitHash_x86-op23 }} | tee .commitHash_x86-op23
+        echo ${{ steps.getHash.outputs.commitHash_x64_test }} | tee .commitHash_x64_test
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_test:
     needs: [Checka]
