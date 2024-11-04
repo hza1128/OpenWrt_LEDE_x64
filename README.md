@@ -5,6 +5,7 @@
 
 ## 当前编译状态：
 |    序号    |     架构名称    |    编译状态    |    下载链接    |
+| :-----------------: | :-------------: |:-----------------: | :-----------------: |
 
 | 1 |          X86_64_全功能版          |<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml"><img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/3092099/OpenWrt_Build_x64/releases/tag/x64_all)    |
 
