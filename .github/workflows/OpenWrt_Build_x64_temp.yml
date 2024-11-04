@@ -13,15 +13,15 @@ on:
       checkupdates54:
         description: '编译5.4内核'
         required: false
-        default: 'false'
+        default: 'true'
       checkupdates515:
         description: '编译5.15内核'
         required: false
-        default: 'false'
+        default: 'true'
       checkupdates61:
         description: '编译6.1X内核'
         required: false
-        default: 'false'
+        default: 'true'
       checkupdates66:
         description: '编译6.6X内核'
         required: false
