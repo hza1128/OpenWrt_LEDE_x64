@@ -4,7 +4,7 @@
 # By：GXNAS
 #===============================================
 
-name: OpenWrt_Build_x64_test
+name: Oistoreos_X86_x64
 
 on:
   repository_dispatch:
@@ -48,8 +48,8 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  FEEDS_CONF: feeds_config/lede23.feeds.conf.default
-  CONFIG_FILE: config/lede_config/x64_test.config
+  FEEDS_CONF: feeds_config/lede.feeds.conf.default
+  CONFIG_FILE: config/lede_config/istoreos.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/diy-part1.sh
   DIY_P2_SH: diy_script/lede_diy/x86/x64_test_diy-part2.sh
@@ -59,7 +59,7 @@ env:
   UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: x64_test
+  FILE_NAME: istoreos
   PRODUCT_NAME: x86_64
 
 jobs:
@@ -68,7 +68,7 @@ jobs:
     env:
       REPO_URL_Lede: https://github.com/coolsnowwolf/lede
       REPO_BRANCH_Lede: master
-      REPO_PATH_Lede : "x64_test"
+      REPO_PATH_Lede : "istoreos"
     outputs:
       output: ${{ steps.outputunifreq.outputs.unifreq }}
     steps:
