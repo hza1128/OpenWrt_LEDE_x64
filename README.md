@@ -147,10 +147,6 @@
 　└── <b>退出</b>
 </details>
 
-## 固件下载
-**点击跳转到该设备固件下载页面**
-- [**下载地址**](https://github.com/3092099/OpenWrt_Build_x64/releases)
-
 <a href="#readme">
 <img src="https://img.shields.io/badge/-返回顶部-FFFFFF.svg" title="返回顶部" align="right"/>
 </a>
