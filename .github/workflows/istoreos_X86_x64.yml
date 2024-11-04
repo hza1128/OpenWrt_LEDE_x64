@@ -52,7 +52,7 @@ env:
   CONFIG_FILE: config/lede_config/istoreos.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/diy-part1.sh
-  DIY_P2_SH: diy_script/lede_diy/x86/x64_gxnas_diy-part2.sh
+  DIY_P2_SH: diy_script/lede_diy/x86/istoreos_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: true
@@ -427,13 +427,13 @@ jobs:
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.1.11
+          - 🌐 默认地址：192.168.10.12
           - 🔑 默认密码：无密码
           ### 🧊 固件版本
           - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
           - ★ 感谢源码作者无私分享！
           - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
+          #- 作者: ${{ env.author }}
           - 时间: ${{ env.date }}
           - 内容: ${{ env.commit }}
           - hash: ${{ env.hash }}
@@ -450,24 +450,6 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ♨️ ${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
-          时间: ${{ env.date }}
-          内容: ${{ env.commit }}
-          hash: ${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}-op23_${{ env.KERNEL }}
-
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
@@ -479,7 +461,6 @@ jobs:
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
           🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
           时间: ${{ env.date }}
           内容: ${{ env.commit }}
           hash: ${{ env.hash }}
@@ -738,7 +719,7 @@ jobs:
           - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
           - ★ 感谢源码作者无私分享！
           - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
+          #- 作者: ${{ env.author }}
           - 时间: ${{ env.date }}
           - 内容: ${{ env.commit }}
           - hash: ${{ env.hash }}
@@ -755,24 +736,6 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ♨️ ${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
-          时间: ${{ env.date }}
-          内容: ${{ env.commit }}
-          hash: ${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}-op23_${{ env.KERNEL }}
-
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
@@ -784,7 +747,6 @@ jobs:
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
           🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
           时间: ${{ env.date }}
           内容: ${{ env.commit }}
           hash: ${{ env.hash }}
@@ -1046,7 +1008,7 @@ jobs:
           - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
           - ★ 感谢源码作者无私分享！
           - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
+          #- 作者: ${{ env.author }}
           - 时间: ${{ env.date }} 
           - 内容: ${{ env.commit }}        
           - hash: ${{ env.hash }}
@@ -1063,24 +1025,6 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ♨️ ${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
-          时间: ${{ env.date }}
-          内容: ${{ env.commit }}
-          hash: ${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}-op23_${{ env.KERNEL }}
-
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
@@ -1092,7 +1036,6 @@ jobs:
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
           🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
           时间: ${{ env.date }}
           内容: ${{ env.commit }}
           hash: ${{ env.hash }}
@@ -1352,7 +1295,7 @@ jobs:
           - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
           - ★ 感谢源码作者无私分享！
           - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
+          #- 作者: ${{ env.author }}
           - 时间: ${{ env.date }} 
           - 内容: ${{ env.commit }}        
           - hash: ${{ env.hash }}
@@ -1369,24 +1312,6 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_TO }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ♨️ ${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
-          时间: ${{ env.date }}
-          内容: ${{ env.commit }}
-          hash: ${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}-op23_${{ env.KERNEL }}
-
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
@@ -1398,7 +1323,6 @@ jobs:
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
           🎈🎈🎈 更新信息 🎈🎈🎈
-          作者: ${{ env.author }}
           时间: ${{ env.date }}
           内容: ${{ env.commit }}
           hash: ${{ env.hash }}
