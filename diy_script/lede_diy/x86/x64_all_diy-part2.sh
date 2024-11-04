@@ -53,6 +53,9 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/*/Make
 ##切换为samba4
 # sed -i 's/luci-app-samba/luci-app-samba4/g' package/lean/autosamba/Makefile
 
+# 最大连接数修改为65535
+sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=65535' package/base-files/files/etc/sysctl.conf
+
 # 替换curl修改版（无nghttp3、ngtcp2）
 curl_ver=$(grep -i "PKG_VERSION:=" feeds/packages/net/curl/Makefile | awk -F'=' '{print $2}')
 if [ "$curl_ver" != "8.9.1" ]; then
@@ -101,14 +104,18 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter.git package/OpenAp
 # eqos 限速
 # merge_package master https://github.com/kenzok8/openwrt-packages package/custom luci-app-eqos
 
+# filebrowser 文件浏览器
+merge_package main https://github.com/Lienol/openwrt-package package/custom luci-app-filebrowser
+
+# frpc frps
+rm -rf feeds/luci/applications/{luci-app-frpc,luci-app-frps,luci-app-hd-idle,luci-app-adblock,luci-app-filebrowser}
+merge_package master https://github.com/immortalwrt/luci package/custom applications/luci-app-filebrowser applications/luci-app-syncdial applications/luci-app-eqos applications/luci-app-nps applications/luci-app-nfs applications/luci-app-frpc applications/luci-app-frps applications/luci-app-hd-idle applications/luci-app-adblock applications/luci-app-socat
+
 # poweroff
 git clone https://github.com/esirplayground/luci-app-poweroff package/luci-app-poweroff
 
 # unblockneteasemusic
 # git clone --depth=1 https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git package/luci-app-unblockneteasemusic
-
-# filebrowser 文件浏览器
-merge_package main https://github.com/Lienol/openwrt-package package/custom luci-app-filebrowser
 
 # smartdns
 rm -rf feeds/packages/net/smartdns
@@ -156,16 +163,13 @@ git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-app-argon-config.
 # 更改argon主题背景
 cp -f $GITHUB_WORKSPACE/personal/bg1.jpg package/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 
-# 主机名右上角符号❤
-# sed -i 's/❤/❤/g' package/lean/luci-theme-argon_armygreen/luasrc/view/themes/argon_armygreen/header.htm
-
 # 修改主题多余版本信息
 sed -i 's|<a class="luci-link" href="https://github.com/openwrt/luci"|<a|g' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
 sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank">|<a>|g' package/luci-theme-argon/luasrc/view/themes/argon/footer.htm
 sed -i 's/<a href=\"https:\/\/github.com\/coolsnowwolf\/luci\">/<a>/g' feeds/luci/themes/luci-theme-bootstrap/luasrc/view/themes/bootstrap/footer.htm
 
 # 显示增加编译时间
-sed -i "s/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%>/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> (By @Jejz build $(TZ=UTC-8 date "+%Y-%m-%d %H:%M"))/g" package/lean/autocore/files/x86/index.htm
+#sed -i "s/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%>/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> (By @GXNAS build $(TZ=UTC-8 date "+%Y-%m-%d %H:%M"))/g" package/lean/autocore/files/x86/index.htm
 
 # 修改概览里时间显示为中文数字
 sed -i 's/os.date()/os.date("%Y年%m月%d日") .. " " .. translate(os.date("%A")) .. " " .. os.date("%X")/g' package/lean/autocore/files/x86/index.htm
@@ -181,7 +185,7 @@ cp -f $GITHUB_WORKSPACE/personal/banner package/base-files/files/etc/banner
 #msgid "Compile Downloads"
 #msgstr "固件出处"
 #EOF
-添加CPU使用率、编译作者、固件下载地址
+#添加CPU使用率、编译作者、固件下载地址
 sed -i '/<tr><td width="33%"><%:CPU usage/a <tr><td width="33%"><%:Compiler author%></td><td><a target="_blank" href="https://wp.gxnas.com">【GXNAS博客】https://wp.gxnas.com</a></td></tr>' package/lean/autocore/files/x86/index.htm
 sed -i '5a\msgid "Compiler author"' feeds/luci/modules/luci-base/po/zh-cn/base.po
 sed -i '6a\msgstr "固件编译者"' feeds/luci/modules/luci-base/po/zh-cn/base.po
@@ -190,7 +194,6 @@ sed -i '/<tr><td width="33%"><%:Compiler author/a <tr><td width="33%"><%:Firmwar
 sed -i '8a\msgid "Firmware Update"' feeds/luci/modules/luci-base/po/zh-cn/base.po
 sed -i '9a\msgstr "固件出处"' feeds/luci/modules/luci-base/po/zh-cn/base.po
 sed -i '10a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po
-
 
 # 修改makefile
 find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/include\ \.\.\/\.\.\/luci\.mk/include \$(TOPDIR)\/feeds\/luci\/luci\.mk/g' {}
@@ -202,6 +205,14 @@ find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/PKG_SOURCE_U
 sed -i 's/services/vpn/g' feeds/luci/applications/luci-app-v2ray-server/luasrc/controller/*.lua
 sed -i 's/services/vpn/g' feeds/luci/applications/luci-app-v2ray-server/luasrc/model/cbi/v2ray_server/*.lua
 sed -i 's/services/vpn/g' feeds/luci/applications/luci-app-v2ray-server/luasrc/view/v2ray_server/*.htm
+
+# nlbwmon移动网络
+sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/root/usr/share/luci/menu.d/luci-app-nlbwmon.json
+sed -i 's/services/network/g' feeds/luci/applications/luci-app-nlbwmon/htdocs/luci-static/resources/view/nlbw/config.js
+
+# 重命名
+sed -i 's,frp 服务器,Frp 服务器,g' feeds/luci/applications/luci-app-frps/po/zh_Hans/frps.po
+sed -i 's,frp 客户端,Frp 客户端,g' feeds/luci/applications/luci-app-frpc/po/zh_Hans/frpc.po
 
 # 修改插件名字
 # sed -i 's/"挂载 SMB 网络共享"/"挂载共享"/g' `grep "挂载 SMB 网络共享" -rl ./`
