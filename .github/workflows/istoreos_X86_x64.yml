@@ -52,7 +52,7 @@ env:
   CONFIG_FILE: config/lede_config/istoreos.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/diy-part1.sh
-  DIY_P2_SH: diy_script/lede_diy/x86/x64_test_diy-part2.sh
+  DIY_P2_SH: diy_script/lede_diy/x86/x64_gxnas_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: true
