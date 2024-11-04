@@ -4,29 +4,15 @@
 </div>
 
 ## 当前编译状态：
-|    序号    |     架构名称    |    编译状态    |    下载链接    |
+|    序号    |     架构名称    |    编译状态    |    固件下载    |
 | :-----------------: | :-------------: |:-----------------: | :-----------------: |
 | 1 |          X86_64_全功能版          |<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml"><img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/3092099/OpenWrt_Build_x64/releases/tag/x64_all)    |
+| 2 |          X86_64_主路由版          |<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_wjq.yml"><img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_wjq.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/3092099/OpenWrt_Build_x64/releases/tag/x64_wjq)    |
+| 3 |          X86_64_旁路由版          |<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_gxnas.yml"><img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_gxnas.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/3092099/OpenWrt_Build_x64/releases/tag/x64_gxnas)    |
+| 4 |          X86_64_精简版          |<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_soot.yml"><img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_soot.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/3092099/OpenWrt_Build_x64/releases/tag/x64_soot)    |
+| 5 |          X86_64_测试版          |<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml"><img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml/badge.svg?style=flat" /></a>    |[下载地址](https://github.com/3092099/OpenWrt_Build_x64/releases/tag/x64_test)    |
 
 </br>
-<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_wjq.yml">
-    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_wjq.yml/badge.svg?style=flat" />
-</a>
-
-</br>
-<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_gxnas.yml">
-    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_gxnas.yml/badge.svg?style=flat" />
-</a>
-
-</br>
-<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_soot.yml">
-    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_soot.yml/badge.svg?style=flat" />
-</a>
-
-</br>
-<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml">
-    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml/badge.svg?style=flat" />
-</a>
 
 # ==============================
 
