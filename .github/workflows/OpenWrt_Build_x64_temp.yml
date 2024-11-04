@@ -56,11 +56,11 @@ env:
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: true
-  UPLOAD_FIRMWARE: false
+  UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   FILE_NAME: x86_64
-  PRODUCT_NAME: x86_64
+  PRODUCT_NAME: Build_x64_temp
 
 jobs:
   Checka:
@@ -331,6 +331,7 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        ls
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -387,7 +388,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_5.4_temp
 
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
@@ -401,7 +402,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_5.4_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_515:
     needs: [Checka]
@@ -599,14 +600,14 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-515-config
+        name: OpenWrt_x64_5.15_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -621,6 +622,7 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        ls
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -629,7 +631,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_x64_5.15_temp-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -637,28 +639,21 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }} 」固件
+        name: OpenWrt_x64_5.15_temp
         allowUpdates: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: OpenWrt_x64_5.15_temp
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
-          **homeproxy/mihomo**
-          ### 📒 固件信息
+            ### 📒 固件信息
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.FILE_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.8.3
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }}
-          - 内容: ${{ env.commit }}
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 hash哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Completion time 
@@ -684,7 +679,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_5.15_temp
 
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
@@ -698,7 +693,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_5.15_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_61X:
     needs: [Checka]
@@ -898,14 +893,14 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-61-config
+        name: OpenWrt_x64_6.1X_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -920,6 +915,7 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        ls
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -928,7 +924,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_x64_6.1X_temp-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -936,29 +932,21 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}」固件
+        name: OpenWrt_x64_6.1X_temp
         allowUpdates: true
-        removeArtifacts: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: OpenWrt_x64_6.1X_temp
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
-          **homeproxy/mihomo**
-          ### 📒 固件信息
+           ### 📒 固件信息
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.FILE_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.8.3
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }} 
-          - 内容: ${{ env.commit }}        
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 hash哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Completion time 
@@ -984,7 +972,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_6.1X_temp
 
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
@@ -998,7 +986,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_6.1X_temp
 # //////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_66X:
     needs: [Checka]
@@ -1196,14 +1184,14 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-66-config
+        name: OpenWrt_x64_6.6X_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -1218,6 +1206,7 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        ls
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -1226,7 +1215,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_x64_6.6X_temp-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -1234,29 +1223,21 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}」固件
+        name: OpenWrt_x64_6.6X_temp
         allowUpdates: true
-        removeArtifacts: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: OpenWrt_x64_6.6X_temp
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
-          **homeproxy/mihomo**
           ### 📒 固件信息
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.FILE_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.8.3
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }} 
-          - 内容: ${{ env.commit }}        
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 hash哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Completion time 
@@ -1282,7 +1263,7 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_6.6X_temp
 
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
@@ -1296,4 +1277,4 @@ jobs:
           编译耗时：${{ env.time }}
           hash哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_6.6X_temp
