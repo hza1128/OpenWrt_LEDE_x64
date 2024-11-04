@@ -2,13 +2,34 @@
 <img width="768" src="https://cdn.jsdelivr.net/gh/Jejz168/Picture/OpenWrt-logo.png"/>
 <h1>OpenWrt_Build_x64</h1>
 </div>
-
--  🛑******最好全新刷机******
--  本库x86为squashfs格式(Kernel=32M，rootfs=968M)
--  ext4 与squashfs 格式的区别： ext4 格式的rootfs 可以扩展磁盘空间大小，而squashfs 不能。 squashfs 格式的rootfs 可以使用重置功能（恢复出厂设置），而ext4 不能。
--  *必须要是本库最新才能使用。不然就会死翘翘。
--  升级方法：下载好对应的版本（.img.gz），然后（openwrt-系统-备份/升级） *直接选择，不用解压
+## 编译状态：
 # ==============================
+<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml">
+    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_all.yml/badge.svg?style=flat" />
+</a>
+
+</br>
+<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_wjq.yml">
+    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_wjq.yml/badge.svg?style=flat" />
+</a>
+
+</br>
+<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_gxnas.yml">
+    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_gxnas.yml/badge.svg?style=flat" />
+</a>
+
+</br>
+<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_soot.yml">
+    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_soot.yml/badge.svg?style=flat" />
+</a>
+
+</br>
+<a href="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml">
+    <img src="https://github.com/3092099/OpenWrt_Build_x64/actions/workflows/OpenWrt_Build_x64_test.yml/badge.svg?style=flat" />
+</a>
+
+
+
 ## 项目说明 [![](https://img.shields.io/badge/-项目基本介绍-FFFFFF.svg)](#项目说明-)
 - 固件来源：[![Lean](https://img.shields.io/badge/Lede-Lean-red.svg?style=flat&logo=appveyor)](https://github.com/coolsnowwolf/lede) 
 - 项目使用 Github Actions 拉取 [Lean](https://github.com/coolsnowwolf/lede) 的 `Openwrt` 源码仓库进行云编译
@@ -16,7 +37,11 @@
 - 🔴x86[主路由版] 固件默认 IP 地址：`192.168.18.1` 默认密码：`无密码`
 - 🔴x86[旁路由版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
 - 🔴x86[精简版] 固件默认 IP 地址：`192.168.1.11` 默认密码：`无密码`
-- 仓库编译的固件插件均为最新版本，最新版意味着可能有 BUG，如果之前使用稳定，则无需追新。
+-  本库编译的x86固件为squashfs格式；
+-  ext4 与squashfs 格式的区别： ext4 格式的rootfs 可以扩展磁盘空间大小，而squashfs 不能。 squashfs 格式的rootfs 可以使用重置功能（恢复出厂设置），而ext4 不能。
+-  默认的固件容量：Kernel=32M，rootfs=968M)；
+-  升级方法：下载好对应的版本（.img.gz），然后在（openwrt-系统-备份/升级） *直接选择，不用解压；
+- 🛑******建议全新刷机可获得最佳的体验******
 
 ## 插件预览 [![](https://img.shields.io/badge/-固件插件及功能预览-FFFFFF.svg)](#插件预览-)
 <details>
