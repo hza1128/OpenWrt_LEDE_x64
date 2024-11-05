@@ -31,9 +31,9 @@ env:
   DIY_P2_SH: diy_script/lede_diy/x86/x64_test_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
-  UPLOAD_CONFIG: true
-  UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: false
+  UPLOAD_CONFIG: false
+  UPLOAD_FIRMWARE: false
+  UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   FILE_NAME: OpenWrt_Build_x64_test
   PRODUCT_NAME: OpenWrt_Build_x64_test
@@ -275,14 +275,14 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_test.config
+        name: ${{ env.FILE_NAME }}.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -297,6 +297,9 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        ls
+        mv openwrt_x86-64*.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}.img.gz
+        ls
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -305,7 +308,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_test-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -313,10 +316,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_test
+        name: ${{ env.FILE_NAME }}
         allowUpdates: true
         removeArtifacts: true
-        tag: OpenWrt_x64_test
+        tag: ${{ env.FILE_NAME }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
@@ -328,7 +331,7 @@ jobs:
           - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
-          - 🎈 hash哈希值：${{ env.hash }}
+          - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Completion time 
@@ -352,9 +355,9 @@ jobs:
           开始时间：${{ env.DATE }}
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
+          源码哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}-op23_${{ env.KERNEL }}
+          📍: https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}
 
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
@@ -366,6 +369,6 @@ jobs:
           开始时间：${{ env.DATE }}
           完成时间：${{ env.END }}
           编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
+          源码哈希值：${{ env.hash }}
           ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}-op23_${{ env.KERNEL }}
+          📍: https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}
