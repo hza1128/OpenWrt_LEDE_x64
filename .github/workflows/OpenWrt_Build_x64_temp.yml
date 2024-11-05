@@ -403,7 +403,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -422,7 +422,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -705,7 +705,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -724,7 +724,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1009,7 +1009,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1028,7 +1028,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1310,7 +1310,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1329,7 +1329,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
