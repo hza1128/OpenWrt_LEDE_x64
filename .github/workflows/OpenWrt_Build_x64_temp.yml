@@ -47,7 +47,7 @@ env:
   PRODUCT_NAME: x86-64
 
 jobs:
-  Checka:
+  CheckRepo:
     runs-on: ubuntu-latest
     env:
       REPO_URL_Lede: https://github.com/coolsnowwolf/lede
@@ -88,8 +88,8 @@ jobs:
         echo ${{ steps.getHash.outputs.commitHash_x64_temp }} | tee .commitHash_x64_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_54:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
@@ -436,8 +436,8 @@ jobs:
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_515:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates515 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates515 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
@@ -738,8 +738,8 @@ jobs:
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_61X:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates61 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates61 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
@@ -1042,8 +1042,8 @@ jobs:
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # //////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_66X:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
