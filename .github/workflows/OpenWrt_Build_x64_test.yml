@@ -316,10 +316,10 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
-          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
           - 🌐 默认地址：192.168.1.11
@@ -346,10 +346,10 @@ jobs:
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
           ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
-          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
           - 🌐 默认地址：192.168.1.11
@@ -365,10 +365,10 @@ jobs:
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
           ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
-          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
           - 🌐 默认地址：192.168.1.11
