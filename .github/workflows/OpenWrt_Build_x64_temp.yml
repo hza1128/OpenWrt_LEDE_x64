@@ -293,7 +293,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}_${{ env.KERNEL }}.config
+        name: ${{ env.FILE_NAME }}.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -313,6 +313,8 @@ jobs:
         echo "名称优化处理..."
         mv *bios.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.img.gz
         mv *uefi.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.img.gz
+        mv *bios.md5 ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.md5
+        mv *uefi.md5 ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
         ls
@@ -629,7 +631,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}_${{ env.KERNEL }}.config
+        name: ${{ env.FILE_NAME }}.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -933,7 +935,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}_${{ env.KERNEL }}.config
+        name: ${{ env.FILE_NAME }}.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -1235,7 +1237,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}_${{ env.KERNEL }}.config
+        name: ${{ env.FILE_NAME }}.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
