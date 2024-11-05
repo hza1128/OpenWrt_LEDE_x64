@@ -280,7 +280,11 @@ jobs:
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -311,10 +315,10 @@ jobs:
         echo "当前生成的文件有："
         ls
         echo "名称优化处理..."
-        mv *bios.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.img.gz
-        mv *uefi.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.img.gz
-        mv *bios.md5 ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.md5
-        mv *uefi.md5 ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.md5
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
         ls
@@ -329,47 +333,12 @@ jobs:
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
-      id: release_54
+      id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
-        token: ${{ secrets.GH_TOKEN }}
-        body: |
-          ### 📒 固件信息
-          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
-          - 🔴 固件大小：Kernel=32M，rootfs=968M
-          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
-          - 🌻 固件源码: ${{ env.REPO_URL }}
-          - 💝 源码分支: ${{ env.REPO_BRANCH }}
-          - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.1.11
-          - 🔑 默认密码：无密码
-          - 🧊 更新时间：${{ env.date }}
-          - 🎈 源码哈希值：${{ env.hash }}
-        artifacts: ${{ env.FIRMWARE }}/*
-
-    - name: Completion time 
-      run: |
-        echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
-        end=$(date +%s)
-        seconds=$(( end - start ))
-        hour=$(( $seconds/3600 ))
-        min=$(( ($seconds-${hour}*3600)/60 ))
-        sec=$(( $seconds-${hour}*3600-${min}*60 ))
-        HMS=`echo ${hour}:${min}:${sec}`
-        echo "time=$HMS" >> $GITHUB_ENV
-
-    - name: Create release
-      id: release_515
-      uses: ncipollo/release-action@v1
-      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
-      with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
-        allowUpdates: true
-        removeArtifacts: true
         tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
@@ -618,13 +587,17 @@ jobs:
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
@@ -649,8 +622,10 @@ jobs:
         echo "当前生成的文件有："
         ls
         echo "名称优化处理..."
-        mv *bios.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.img.gz
-        mv *uefi.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.img.gz
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
         ls
@@ -665,13 +640,12 @@ jobs:
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
-      id: release_61
+      id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        removeArtifacts: true
         tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
@@ -922,13 +896,17 @@ jobs:
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name:  ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
@@ -953,8 +931,10 @@ jobs:
         echo "当前生成的文件有："
         ls
         echo "名称优化处理..."
-        mv *bios.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.img.gz
-        mv *uefi.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.img.gz
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
         ls
@@ -969,13 +949,12 @@ jobs:
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
-      id: release_66
+      id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        removeArtifacts: true
         tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
@@ -1224,7 +1203,11 @@ jobs:
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -1255,8 +1238,10 @@ jobs:
         echo "当前生成的文件有："
         ls
         echo "名称优化处理..."
-        mv *bios.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.img.gz
-        mv *uefi.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.img.gz
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
         ls
