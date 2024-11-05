@@ -1,9 +1,9 @@
 #!/bin/bash
 #===============================================
 # Description: DIY script part 2
-# File name: diy-part2.sh
+# File name: x64_all_diy-part2.sh
 # Lisence: MIT
-# By: Jejz
+# By: GXNAS
 #===============================================
 
 echo "开始 DIY2 配置……"
