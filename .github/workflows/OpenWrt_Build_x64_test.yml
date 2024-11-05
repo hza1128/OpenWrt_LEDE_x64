@@ -11,13 +11,9 @@ on:
   workflow_dispatch:
     inputs:
       checkupdates66:
-        description: 'Checkupdates66 connection to Actions'
+        description: '编译6.6X内核'
         required: false
         default: 'true'
-      ssh66:
-        description: 'SSH66 connection to Actions'
-        required: false
-        default: 'false'
   #schedule:
     #- cron: 0 2 * * 5
 
@@ -36,7 +32,7 @@ env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   FILE_NAME: OpenWrt_Build_x64_test
-  PRODUCT_NAME: OpenWrt_Build_x64_test
+  PRODUCT_NAME: x86-64
 
 jobs:
   Checka:
@@ -196,13 +192,6 @@ jobs:
         
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=6.6/g' target/linux/x86/Makefile
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh66 == 'true' && github.event.inputs.ssh66  != 'false') || contains(github.event.action, 'ssh66')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
     - name: Output compilation information
       run: |
         cd openwrt
@@ -275,14 +264,14 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}.config
+        name: ${{ env.FILE_NAME }}_${{ env.KERNEL }}.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -297,10 +286,14 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        echo "当前生成的文件有："
         ls
-        mv openwrt_x86-64*.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}.img.gz
-        ls
+        echo "名称优化处理..."
+        mv *bios.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}-${{ env.FILE_DATE }}-uefi.img.gz
         rm -rf packages
+        echo "名称优化完成，优化后的文件为："
+        ls
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -308,7 +301,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -316,15 +309,16 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}
+        name: ${{ FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
         removeArtifacts: true
-        tag: ${{ env.FILE_NAME }}
+        tag: ${{ FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
+          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
-          - 💻 平台架构: ${{ env.FILE_NAME }}
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
@@ -351,24 +345,34 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 🐳${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          源码哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}
+          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ FILE_NAME }}-${{ env.KERNEL }}
 
     - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
-        title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
+        title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 🐳${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          源码哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}
+          ♨️ OpenWrt_${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成♨️
+          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ FILE_NAME }}-${{ env.KERNEL }}
