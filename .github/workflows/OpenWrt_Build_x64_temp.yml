@@ -39,7 +39,7 @@ env:
   DIY_P2_SH: diy_script/lede_diy/x86/x64_test_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
-  UPLOAD_CONFIG: true
+  UPLOAD_CONFIG: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
@@ -325,7 +325,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -661,7 +661,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -965,7 +965,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
@@ -1267,7 +1267,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}-${{ env.DEVICE_NAME }}-${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
