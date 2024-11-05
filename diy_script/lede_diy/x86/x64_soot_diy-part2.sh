@@ -1,7 +1,7 @@
 #!/bin/bash
 #===============================================
 # Description: DIY script part 2
-# File name: diy-part2.sh
+# File name: x64_soot_diy-part2.sh
 # Lisence: MIT
 # By: GXNAS
 #===============================================
