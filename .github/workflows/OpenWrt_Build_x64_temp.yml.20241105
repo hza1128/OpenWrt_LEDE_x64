@@ -40,7 +40,7 @@ env:
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: false
-  UPLOAD_FIRMWARE: true
+  UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   FILE_NAME: OpenWrt_Build_x64_temp
@@ -281,10 +281,10 @@ jobs:
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
         echo "./artifact/buildinfo文件夹有："
-        ls ./artifact/buildinfo
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
         echo "openwrt/bin/targets/文件夹有："
-        ls openwrt/bin/targets/
+        ls -R openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -313,7 +313,7 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         echo "当前生成的文件有："
-        ls
+        ls -R
         echo "名称优化处理..."
         mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
         mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
@@ -321,7 +321,7 @@ jobs:
         mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
-        ls
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -588,10 +588,10 @@ jobs:
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
         echo "./artifact/buildinfo文件夹有："
-        ls ./artifact/buildinfo
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
         echo "openwrt/bin/targets/文件夹有："
-        ls openwrt/bin/targets/
+        ls -R openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -620,7 +620,7 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         echo "当前生成的文件有："
-        ls
+        ls -R
         echo "名称优化处理..."
         mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
         mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
@@ -628,7 +628,7 @@ jobs:
         mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
-        ls
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -897,10 +897,10 @@ jobs:
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
         echo "./artifact/buildinfo文件夹有："
-        ls ./artifact/buildinfo
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
         echo "openwrt/bin/targets/文件夹有："
-        ls openwrt/bin/targets/
+        ls -R openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -929,7 +929,7 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         echo "当前生成的文件有："
-        ls
+        ls -R
         echo "名称优化处理..."
         mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
         mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
@@ -937,7 +937,7 @@ jobs:
         mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
-        ls
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -1204,10 +1204,10 @@ jobs:
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
         echo "./artifact/buildinfo文件夹有："
-        ls ./artifact/buildinfo
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
         echo "openwrt/bin/targets/文件夹有："
-        ls openwrt/bin/targets/
+        ls -R openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -1236,7 +1236,7 @@ jobs:
       run: |
         cd openwrt/bin/targets/*/*
         echo "当前生成的文件有："
-        ls
+        ls -R
         echo "名称优化处理..."
         mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
         mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
@@ -1244,7 +1244,7 @@ jobs:
         mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
         echo "名称优化完成，优化后的文件为："
-        ls
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
