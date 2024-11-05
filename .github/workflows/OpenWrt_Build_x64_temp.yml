@@ -331,13 +331,13 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        tag: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
-          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
@@ -667,14 +667,14 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
         removeArtifacts: true
-        tag: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
-          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
@@ -971,14 +971,14 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
         removeArtifacts: true
-        tag: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
-          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
@@ -1273,13 +1273,13 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        tag: ${{ FILE_NAME }}-${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
-          - ❀  固件名称：${{ FILE_NAME }}-${{ env.KERNEL }}
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
           - ⚽ 固件源码: ${{ env.REPO_URL }}
