@@ -31,7 +31,7 @@ sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/file
 #sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
 
 # 修改版本号
-sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='OpenWrt_x64_主路由版 by GXNAS build @R$(date +%y.%m.%d)'|g" package/lean/default-settings/files/zzz-default-settings
+sed -i "s/DISTRIB_DESCRIPTION=' *LEDE *'/DISTRIB_DESCRIPTION='OpenWrt_x64_主路由版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
 
 # 设置ttyd免帐号登录
 sed -i 's/\/bin\/login/\/bin\/login -f root/' feeds/packages/utils/ttyd/files/ttyd.config
@@ -179,21 +179,18 @@ cp -f $GITHUB_WORKSPACE/personal/banner package/base-files/files/etc/banner
 # wget -O ./package/base-files/files/etc/banner https://raw.githubusercontent.com/Jejz168/OpenWrt/main/personal/banner
 
 # 固件更新地址
-#sed -i '/CPU usage/a\                <tr><td width="33%"><%:Compile update%></td><td><a target="_blank" href="https://d.gxnas.com/">👆下载地址</a></td></tr>'  package/lean/autocore/files/x86/index.htm
-#cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
+sed -i '/CPU usage/a\                <tr><td width="33%"><%:Compile update%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
+cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
 
-#msgid "Compile Downloads"
-#msgstr "固件出处"
-#EOF
-#添加CPU使用率、编译作者、固件下载地址
-sed -i '/<tr><td width="33%"><%:CPU usage/a <tr><td width="33%"><%:Compiler author%></td><td><a target="_blank" href="https://wp.gxnas.com">【GXNAS博客】https://wp.gxnas.com</a></td></tr>' package/lean/autocore/files/x86/index.htm
-sed -i '5a\msgid "Compiler author"' feeds/luci/modules/luci-base/po/zh-cn/base.po
-sed -i '6a\msgstr "固件编译者"' feeds/luci/modules/luci-base/po/zh-cn/base.po
-sed -i '7a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po
-sed -i '/<tr><td width="33%"><%:Compiler author/a <tr><td width="33%"><%:Firmware Update%></td><td><a target="_blank" href="https://d.gxnas.com">点这里下载最新版本</a></td></tr>' package/lean/autocore/files/x86/index.htm
-sed -i '8a\msgid "Firmware Update"' feeds/luci/modules/luci-base/po/zh-cn/base.po
-sed -i '9a\msgstr "固件出处"' feeds/luci/modules/luci-base/po/zh-cn/base.po
-sed -i '10a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po
+msgid "GXNAS Blog"
+msgstr "固件编译者"
+EOF
+sed -i '/CPU usage/a\                <tr><td width="33%"><%:Compile update%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
+cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
+
+msgid "Compile Downloads"
+msgstr "固件出处"
+EOF
 
 # 修改makefile
 find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/include\ \.\.\/\.\.\/luci\.mk/include \$(TOPDIR)\/feeds\/luci\/luci\.mk/g' {}
