@@ -93,8 +93,16 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout_54
+    - name: Checkout
       uses: actions/checkout@main
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Set Beijing Time
+      run: echo "BJ_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
     - name: Check server configuration
       run: |
@@ -114,7 +122,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment_54
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -134,7 +142,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV_54
+    - name: Create VG & LV
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -148,14 +156,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV_54
+    - name: Mount LV
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code_54
+    - name: Clone source code
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -174,20 +182,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds_54
+    - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds_54
+    - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds_54
+    - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration_54
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -214,7 +222,7 @@ jobs:
         
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=5.4/g' target/linux/x86/Makefile
 
-    - name: Output compilation information_54
+    - name: Output compilation information
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -243,7 +251,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package_54
+    - name: Download package
       id: package
       run: |
         cd openwrt
@@ -252,7 +260,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware_54
+    - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
@@ -263,7 +271,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage_54
+    - name: Check space usage
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -275,7 +283,7 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files_54
+    - name: Organize firmware files
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
@@ -286,28 +294,28 @@ jobs:
         echo "openwrt/bin/targets/文件夹有："
         ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory_54
+    - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config_54
+    - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files_54
+    - name: Delete files
       run: |
         cd openwrt
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files_54
+    - name: Organize files
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
@@ -325,14 +333,14 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory_54
+    - name: Upload firmware directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release_54
+    - name: Create release
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
@@ -355,7 +363,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time _54
+    - name: Completion time 
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -366,7 +374,7 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success_54
+    - name: Telegram notification upload success
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -385,7 +393,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success_54
+    - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
@@ -410,10 +418,18 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout_515
+    - name: Checkout
       uses: actions/checkout@main
 
-    - name: Check server configuration_515
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Set Beijing Time
+      run: echo "BJ_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+    - name: Check server configuration
       run: |
         echo "警告⚠"
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
@@ -431,7 +447,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment_515
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -451,7 +467,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV_515
+    - name: Create VG & LV
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -465,14 +481,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV_515
+    - name: Mount LV
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code_515
+    - name: Clone source code
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -491,20 +507,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds_515
+    - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds_515
+    - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds_515
+    - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration_515
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -521,7 +537,7 @@ jobs:
 
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=5.15/g' target/linux/x86/Makefile
 
-    - name: Output compilation information_515
+    - name: Output compilation information
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -550,7 +566,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package_515
+    - name: Download package
       id: package
       run: |
         cd openwrt
@@ -559,7 +575,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware_515
+    - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
@@ -570,7 +586,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage_515
+    - name: Check space usage
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -582,7 +598,7 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files_515
+    - name: Organize firmware files
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
@@ -593,28 +609,28 @@ jobs:
         echo "openwrt/bin/targets/文件夹有："
         ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory_515
+    - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config_515
+    - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files_515
+    - name: Delete files
       run: |
         cd openwrt
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files_515
+    - name: Organize files
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
@@ -632,14 +648,14 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory_515
+    - name: Upload firmware directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release_515
+    - name: Create release
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
@@ -662,7 +678,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time _515
+    - name: Completion time 
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -673,7 +689,7 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success_515
+    - name: Telegram notification upload success
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -692,7 +708,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success_515
+    - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
@@ -717,10 +733,18 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout_61X
+    - name: Checkout
       uses: actions/checkout@main
 
-    - name: Check server configuration_61X
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Set Beijing Time
+      run: echo "BJ_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+    - name: Check server configuration
       run: |
         echo "警告⚠"
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
@@ -738,7 +762,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment_61X
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -758,7 +782,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV_61X
+    - name: Create VG & LV
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -772,14 +796,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV_61X
+    - name: Mount LV
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code_61X
+    - name: Clone source code
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -798,20 +822,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds_61X
+    - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds_61X
+    - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds_61X
+    - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration_61X
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -830,7 +854,7 @@ jobs:
 
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=6.1/g' target/linux/x86/Makefile
 
-    - name: Output compilation information_61X
+    - name: Output compilation information
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -859,7 +883,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package_61X
+    - name: Download package
       id: package
       run: |
         cd openwrt
@@ -868,7 +892,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware_61X
+    - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
@@ -879,7 +903,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage_61X
+    - name: Check space usage
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -891,7 +915,7 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files_61X
+    - name: Organize firmware files
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
@@ -902,28 +926,28 @@ jobs:
         echo "openwrt/bin/targets/文件夹有："
         ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory_61X
+    - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config_61X
+    - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files_61X
+    - name: Delete files
       run: |
         cd openwrt 
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files_61X
+    - name: Organize files
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
@@ -941,14 +965,14 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory_61X
+    - name: Upload firmware directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release_61X
+    - name: Create release
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
@@ -971,7 +995,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time _61X
+    - name: Completion time 
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -982,7 +1006,7 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success_61X
+    - name: Telegram notification upload success
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -1001,7 +1025,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success_61X
+    - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
@@ -1026,8 +1050,16 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout_66X
+    - name: Checkout
       uses: actions/checkout@main
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Set Beijing Time
+      run: echo "BJ_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
     - name: Check server configuration
       run: |
@@ -1047,7 +1079,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment_66X
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -1067,7 +1099,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV_66X
+    - name: Create VG & LV
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -1081,14 +1113,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV_66X
+    - name: Mount LV
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code_66X
+    - name: Clone source code
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -1107,20 +1139,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds_66X
+    - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds_66X
+    - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds_66X
+    - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration_66X
+    - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -1137,7 +1169,7 @@ jobs:
         
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=6.6/g' target/linux/x86/Makefile
 
-    - name: Output compilation information_66X
+    - name: Output compilation information
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -1166,7 +1198,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package_66X
+    - name: Download package
       id: package
       run: |
         cd openwrt
@@ -1175,7 +1207,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware_66X
+    - name: Compile the firmware
       id: compile
       run: |
         cd openwrt
@@ -1186,7 +1218,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage_66X
+    - name: Check space usage
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -1198,7 +1230,7 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files_66X
+    - name: Organize firmware files
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
@@ -1209,28 +1241,28 @@ jobs:
         echo "openwrt/bin/targets/文件夹有："
         ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory_66X
+    - name: Upload bin directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config_66X
+    - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files_66X
+    - name: Delete files
       run: |
         cd openwrt 
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files_66X
+    - name: Organize files
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
@@ -1248,14 +1280,14 @@ jobs:
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory_66X
+    - name: Upload firmware directory
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
         name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release_66X
+    - name: Create release
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
@@ -1278,7 +1310,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time _66X
+    - name: Completion time 
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -1289,7 +1321,7 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success_66X
+    - name: Telegram notification upload success
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
@@ -1308,7 +1340,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success_66X
+    - name: Push notification upload success
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
