@@ -193,13 +193,6 @@ jobs:
 
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=6.6/g' target/linux/x86/Makefile
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh66  != 'false') || contains(github.event.action, 'ssh515')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
     - name: Output compilation information
       run: |
         cd openwrt
@@ -266,7 +259,11 @@ jobs:
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls -R openwrt/bin/targets/
 
     - name: Upload bin directory
       uses: actions/upload-artifact@main
@@ -294,7 +291,16 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        echo "当前生成的文件有："
+        ls -R
+        echo "名称优化处理..."
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
+        echo "名称优化完成，优化后的文件为："
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -302,7 +308,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_all-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Create release
