@@ -10,60 +10,44 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      checkupdates54:
-        description: '编译5.4内核'
-        required: false
-        default: 'false'
-      checkupdates515:
-        description: '编译5.15内核'
-        required: false
-        default: 'false'
-      checkupdates61:
-        description: '编译6.1X内核'
-        required: false
-        default: 'false'
       checkupdates66:
         description: '编译6.6X内核'
         required: false
         default: 'true'
-      ssh54:
-        description: 'SSH5.4 connection to Actions'
+      checkupdates61:
+        description: '编译6.1X内核'
         required: false
-        default: 'false'
-      ssh515:
-        description: 'SSH5.15 connection to Actions'
+        default: 'true'
+      checkupdates515:
+        description: '编译5.15内核'
         required: false
-        default: 'false'
-      ssh61:
-        description: 'SSH6.1X connection to Actions'
+        default: 'true'
+      checkupdates54:
+        description: '编译5.4内核'
         required: false
-        default: 'false'
-      ssh66:
-        description: 'SSH6.6X connection to Actions'
-        required: false
-        default: 'false'
+        default: 'true'
   #schedule:
-    #- cron: 36 18 * * *
+    #- cron: 0 2 * * 5
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds_config/lede23.feeds.conf.default
-  CONFIG_FILE: config/lede_config/x64_test.config
+  CONFIG_FILE: config/lede_config/x64_temp.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/diy-part1.sh
-  DIY_P2_SH: diy_script/lede_diy/x86/x64_test_diy-part2.sh
+  DIY_P2_SH: diy_script/lede_diy/x86/x64_temp_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
-  UPLOAD_CONFIG: true
+  UPLOAD_CONFIG: false
   UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: x86_64
-  PRODUCT_NAME: x86_64
+  FILE_NAME: OpenWrt_Build_x64_temp
+  PRODUCT_NAME: x86-64
 
 jobs:
-  Checka:
+  CheckRepo:
     runs-on: ubuntu-latest
     env:
       REPO_URL_Lede: https://github.com/coolsnowwolf/lede
@@ -104,12 +88,12 @@ jobs:
         echo ${{ steps.getHash.outputs.commitHash_x64_temp }} | tee .commitHash_x64_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_54:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout
+    - name: Checkout_54
       uses: actions/checkout@main
 
     - name: Check server configuration
@@ -130,7 +114,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment
+    - name: Initialization environment_54
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -150,7 +134,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV
+    - name: Create VG & LV_54
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -164,14 +148,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV
+    - name: Mount LV_54
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code
+    - name: Clone source code_54
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -190,20 +174,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds
+    - name: Load custom feeds_54
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds
+    - name: Update feeds_54
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds
+    - name: Install feeds_54
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration
+    - name: Load custom configuration_54
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -230,14 +214,7 @@ jobs:
         
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=5.4/g' target/linux/x86/Makefile
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh54 == 'true' && github.event.inputs.ssh54  != 'false') || contains(github.event.action, 'ssh54')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
-    - name: Output compilation information
+    - name: Output compilation information_54
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -266,7 +243,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package
+    - name: Download package_54
       id: package
       run: |
         cd openwrt
@@ -275,7 +252,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware
+    - name: Compile the firmware_54
       id: compile
       run: |
         cd openwrt
@@ -286,7 +263,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage
+    - name: Check space usage_54
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -298,73 +275,87 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files
+    - name: Organize firmware files_54
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory
+    - name: Upload bin directory_54
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config
+    - name: Upload config_54
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_5.4_temp.config
+        name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files
+    - name: Delete files_54
       run: |
         cd openwrt
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files
+    - name: Organize files_54
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        echo "当前生成的文件有："
+        ls -R
+        echo "名称优化处理..."
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
+        echo "名称优化完成，优化后的文件为："
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory
+    - name: Upload firmware directory_54
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_5.4_temp-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release
+    - name: Create release_54
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_x64_5.4_temp
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        tag: OpenWrt_x64_5.4_temp
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
-          - 💻 平台架构: ${{ env.FILE_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
           - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
-          - 🎈 hash哈希值：${{ env.hash }}
+          - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time 
+    - name: Completion time _54
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -375,44 +366,54 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
+    - name: Telegram notification upload success_54
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success
+    - name: Push notification upload success_54
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
-        title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
+        title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_515:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates515 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates515 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout
+    - name: Checkout_515
       uses: actions/checkout@main
 
-    - name: Check server configuration
+    - name: Check server configuration_515
       run: |
         echo "警告⚠"
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
@@ -430,7 +431,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment
+    - name: Initialization environment_515
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -450,7 +451,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV
+    - name: Create VG & LV_515
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -464,14 +465,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV
+    - name: Mount LV_515
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code
+    - name: Clone source code_515
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -490,20 +491,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds
+    - name: Load custom feeds_515
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds
+    - name: Update feeds_515
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds
+    - name: Install feeds_515
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration
+    - name: Load custom configuration_515
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -520,14 +521,7 @@ jobs:
 
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=5.15/g' target/linux/x86/Makefile
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh515 == 'true' && github.event.inputs.ssh515  != 'false') || contains(github.event.action, 'ssh515')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
-    - name: Output compilation information
+    - name: Output compilation information_515
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -556,7 +550,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package
+    - name: Download package_515
       id: package
       run: |
         cd openwrt
@@ -565,7 +559,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware
+    - name: Compile the firmware_515
       id: compile
       run: |
         cd openwrt
@@ -576,7 +570,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage
+    - name: Check space usage_515
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -588,80 +582,87 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files
+    - name: Organize firmware files_515
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory
+    - name: Upload bin directory_515
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config
+    - name: Upload config_515
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-515-config
+        name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files
+    - name: Delete files_515
       run: |
         cd openwrt
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files
+    - name: Organize files_515
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        echo "当前生成的文件有："
+        ls -R
+        echo "名称优化处理..."
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
+        echo "名称优化完成，优化后的文件为："
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory
+    - name: Upload firmware directory_515
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release
+    - name: Create release_515
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }} 」固件
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
-          **homeproxy/mihomo**
           ### 📒 固件信息
-          - 💻 平台架构: ${{ env.FILE_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.8.3
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }}
-          - 内容: ${{ env.commit }}
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time 
+    - name: Completion time _515
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -672,44 +673,54 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
+    - name: Telegram notification upload success_515
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success
+    - name: Push notification upload success_515
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
-        title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
+        title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_61X:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates61 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates61 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout
+    - name: Checkout_61X
       uses: actions/checkout@main
 
-    - name: Check server configuration
+    - name: Check server configuration_61X
       run: |
         echo "警告⚠"
         echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
@@ -727,7 +738,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment
+    - name: Initialization environment_61X
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -747,7 +758,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV
+    - name: Create VG & LV_61X
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -761,14 +772,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV
+    - name: Mount LV_61X
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code
+    - name: Clone source code_61X
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -787,20 +798,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds
+    - name: Load custom feeds_61X
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds
+    - name: Update feeds_61X
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds
+    - name: Install feeds_61X
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration
+    - name: Load custom configuration_61X
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -819,14 +830,7 @@ jobs:
 
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=6.1/g' target/linux/x86/Makefile
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh61 == 'true' && github.event.inputs.ssh61  != 'false') || contains(github.event.action, 'ssh61')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
-    - name: Output compilation information
+    - name: Output compilation information_61X
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -855,7 +859,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package
+    - name: Download package_61X
       id: package
       run: |
         cd openwrt
@@ -864,7 +868,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware
+    - name: Compile the firmware_61X
       id: compile
       run: |
         cd openwrt
@@ -875,7 +879,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage
+    - name: Check space usage_61X
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -887,81 +891,87 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files
+    - name: Organize firmware files_61X
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory
+    - name: Upload bin directory_61X
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config
+    - name: Upload config_61X
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-61-config
+        name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files
+    - name: Delete files_61X
       run: |
         cd openwrt 
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files
+    - name: Organize files_61X
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        echo "当前生成的文件有："
+        ls -R
+        echo "名称优化处理..."
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
+        echo "名称优化完成，优化后的文件为："
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory
+    - name: Upload firmware directory_61X
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release
+    - name: Create release_61X
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}」固件
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        removeArtifacts: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
-          **homeproxy/mihomo**
           ### 📒 固件信息
-          - 💻 平台架构: ${{ env.FILE_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.8.3
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }} 
-          - 内容: ${{ env.commit }}        
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time 
+    - name: Completion time _61X
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -972,41 +982,51 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
+    - name: Telegram notification upload success_61X
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success
+    - name: Push notification upload success_61X
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
-        title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
+        title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # //////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_temp_66X:
-    needs: [Checka]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
+    needs: [CheckRepo]
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout
+    - name: Checkout_66X
       uses: actions/checkout@main
 
     - name: Check server configuration
@@ -1027,7 +1047,7 @@ jobs:
         echo "系统空间        类型   总数  已用  可用  使用率"
         df -Th
 
-    - name: Initialization environment
+    - name: Initialization environment_66X
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -1047,7 +1067,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         df -Th
 
-    - name: Create VG & LV
+    - name: Create VG & LV_66X
       run: |
         mnt_size=$(expr $(df -h /mnt | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 1)
         root_size=$(expr $(df -h / | tail -1 | awk '{print $4}' | sed 's/[[:alpha:]]//g' | sed 's/\..*//') - 4)
@@ -1061,14 +1081,14 @@ jobs:
         sudo lvcreate -n runner -l 100%FREE github
         sudo mkfs.xfs /dev/github/runner
 
-    - name: Mount LV
+    - name: Mount LV_66X
       run: |
         sudo mkdir -p /builder
         sudo mount /dev/github/runner /builder
         sudo chown -R runner.runner /builder
         df -Th
 
-    - name: Clone source code
+    - name: Clone source code_66X
       working-directory: /builder
       run: |
         df -hT $PWD
@@ -1087,20 +1107,20 @@ jobs:
         echo "TAG=$(date "+%Y%m%d")" >> $GITHUB_ENV
         echo "start=$(date +%s)" >> $GITHUB_ENV
 
-    - name: Load custom feeds
+    - name: Load custom feeds_66X
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
 
-    - name: Update feeds
+    - name: Update feeds_66X
       run: cd openwrt && ./scripts/feeds update -a
 
-    - name: Install feeds
+    - name: Install feeds_66X
       run: cd openwrt && ./scripts/feeds install -a
 
-    - name: Load custom configuration
+    - name: Load custom configuration_66X
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
@@ -1117,14 +1137,7 @@ jobs:
         
         #sed -i 's/KERNEL_TESTING_PATCHVER:=*.*/KERNEL_TESTING_PATCHVER:=6.6/g' target/linux/x86/Makefile
 
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh66 == 'true' && github.event.inputs.ssh66  != 'false') || contains(github.event.action, 'ssh66')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
-    - name: Output compilation information
+    - name: Output compilation information_66X
       run: |
         cd openwrt
         echo "系统空间        类型  总数  已用  可用  使用率"
@@ -1153,7 +1166,7 @@ jobs:
         echo
         cat .config
 
-    - name: Download package
+    - name: Download package_66X
       id: package
       run: |
         cd openwrt
@@ -1162,7 +1175,7 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
-    - name: Compile the firmware
+    - name: Compile the firmware_66X
       id: compile
       run: |
         cd openwrt
@@ -1173,7 +1186,7 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: Check space usage
+    - name: Check space usage_66X
       run: |
         echo "=========================================="
         echo "----------------空间使用-------------------"
@@ -1185,81 +1198,87 @@ jobs:
         du -h --max-depth=1 openwrt/build_dir
         du -h --max-depth=1 openwrt/bin
 
-    - name: Organize firmware files
+    - name: Organize firmware files_66X
       id: organizer
       run: |
         mkdir -p ./artifact/buildinfo
         cp -rf openwrt/.config ./artifact/buildinfo/x86.config
+        echo "./artifact/buildinfo文件夹有："
+        ls -R ./artifact/buildinfo
         cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
+        echo "openwrt/bin/targets/文件夹有："
+        ls -R openwrt/bin/targets/
 
-    - name: Upload bin directory
+    - name: Upload bin directory_66X
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
-    - name: Upload config
+    - name: Upload config_66X
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: x86-66-config
+        name: OpenWrt_Build_x64_temp.config
         path: ./artifact/buildinfo/
 
-    - name: Delete files
+    - name: Delete files_66X
       run: |
         cd openwrt 
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
 
-    - name: Organize files
+    - name: Organize files_66X
       id: organize
       if: steps.compile.outputs.status == 'success'
       run: |
         cd openwrt/bin/targets/*/*
+        echo "当前生成的文件有："
+        ls -R
+        echo "名称优化处理..."
+        mv *bios.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.img.gz
+        mv *uefi.img.gz ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.img.gz
+        mv openwrt_bios.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-bios.md5
+        mv openwrt_uefi.md5 ${{ env.FILE_NAME }}${{ env.FILE_DATE }}-uefi.md5
         rm -rf packages
+        echo "名称优化完成，优化后的文件为："
+        ls -R
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Upload firmware directory
+    - name: Upload firmware directory_66X
       uses: actions/upload-artifact@main
       if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success'
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
-    - name: Create release
+    - name: Create release_66X
       id: release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.DATE }} 「 ${{ env.FILE_NAME }}_${{ env.KERNEL }}」固件
+        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         allowUpdates: true
-        removeArtifacts: true
-        tag: ${{ env.TAG }}-op23_${{ env.KERNEL }}
+        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
         token: ${{ secrets.GH_TOKEN }}
         body: |
-          **This is OpenWet-op23 Firmware for ${{ env.FILE_NAME }}**
-          **homeproxy/mihomo**
           ### 📒 固件信息
-          - 💻 平台架构: ${{ env.FILE_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.8.3
+          - 🌐 默认地址：192.168.1.11
           - 🔑 默认密码：无密码
-          ### 🧊 固件版本
-          - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-          - ★ 感谢源码作者无私分享！
-          - 🎈🎈🎈 更新信息 🎈🎈🎈
-          - 作者: ${{ env.author }}
-          - 时间: ${{ env.date }} 
-          - 内容: ${{ env.commit }}        
-          - hash: ${{ env.hash }}
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
-    - name: Completion time 
+    - name: Completion time _66X
       run: |
         echo "END=$(date "+%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
         end=$(date +%s)
@@ -1270,30 +1289,40 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
+    - name: Telegram notification upload success_66X
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success
+    - name: Push notification upload success_66X
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
-        title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
+        title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ OpenWrt_${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成♨️
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_temp
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
