@@ -9,15 +9,6 @@ name: OpenWrt_Build_x64_soot
 on:
   repository_dispatch:
   workflow_dispatch:
-    inputs:
-      checkupdates66:
-        description: 'Checkupdates66 connection to Actions'
-        required: false
-        default: 'true'
-      ssh66:
-        description: 'SSH66 connection to Actions'
-        required: false
-        default: 'false'
   schedule:
     - cron: 0 2 * * 5
 
