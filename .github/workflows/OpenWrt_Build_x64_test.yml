@@ -77,7 +77,7 @@ jobs:
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_test:
     needs: [CheckRepo]
-    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
