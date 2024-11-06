@@ -9,6 +9,11 @@ name: OpenWrt_Build_x64_test
 on:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      checkupdates66:
+        description: '启动OpenWrt_Build_x64_test编译'
+        required: false
+        default: 'true'
   #schedule:
     #- cron: 0 2 * * 5
 
