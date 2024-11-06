@@ -77,12 +77,20 @@ jobs:
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_x64_soot:
     needs: [CheckRepo]
-    if: ${{ needs.Checka.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
+    if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout
       uses: actions/checkout@main
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Set Beijing Time
+      run: echo "BJ_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
     - name: Check server configuration
       run: |
