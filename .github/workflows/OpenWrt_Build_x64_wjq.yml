@@ -84,14 +84,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@main
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-
-    - name: Set Beijing Time
-      run: echo "BJ_DATE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
-
     - name: Check server configuration
       run: |
         echo "警告⚠"
