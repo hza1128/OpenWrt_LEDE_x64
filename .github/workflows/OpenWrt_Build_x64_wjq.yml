@@ -316,15 +316,16 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
+          - ⚽ 固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
-          - 💻 平台架构: ${{ env.FILE_NAME }}
-          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - 🌻 固件源码: ${{ env.REPO_URL }}
           - 💝 源码分支: ${{ env.REPO_BRANCH }}
           - 🚀 内核版本: ${{ env.KERNEL }}
-          - 🌐 默认地址：192.168.1.11
+          - 🌐 默认地址：192.168.18.1
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
-          - 🎈 hash哈希值：${{ env.hash }}
+          - 🎈 源码哈希值：${{ env.hash }}
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: Completion time 
@@ -338,30 +339,40 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
+    - name: Telegram notification upload success_54
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 🐳${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}_${{ env.KERNEL }}
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 
-    - name: Push notification upload success
+    - name: Push notification upload success_54
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
-        title: "${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成"
+        title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 🐳${{ env.FILE_NAME }}_${{ env.KERNEL }}编译完成
-          开始时间：${{ env.DATE }}
-          完成时间：${{ env.END }}
-          编译耗时：${{ env.time }}
-          hash哈希值：${{ env.hash }}
-          ✪ ✣ ✤ ✥ ✦ ❉ ❦ ❧ ❃ ❂ ❁ ❀
-          📍: https://github.com/Jejz168/OpenWrt/releases/tag/${{ env.TAG }}_${{ env.KERNEL }}
+          ♨️ 仓库【https://github.com/3092099/OpenWrt_Build_x64】项目编译完成 ♨️
+          - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          - 🔴 固件大小：Kernel=32M，rootfs=968M
+          - 💻 平台架构: ${{ env.PRODUCT_NAME }}
+          - ⚽ 固件源码: ${{ env.REPO_URL }}
+          - 💝 源码分支: ${{ env.REPO_BRANCH }}
+          - 🚀 内核版本: ${{ env.KERNEL }}
+          - 🌐 默认地址：192.168.1.11
+          - 🔑 默认密码：无密码
+          - 🧊 更新时间：${{ env.date }}
+          - 🎈 源码哈希值：${{ env.hash }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
