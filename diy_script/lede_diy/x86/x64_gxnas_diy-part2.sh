@@ -28,7 +28,7 @@ sed -i '/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF./d' package/lean/default-settings/fil
 sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/files/x86/autocore
 
 #修改主机名称
-#sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
+sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
 
 # 修改版本号
 sed -i "s/DISTRIB_DESCRIPTION=' *LEDE *'/DISTRIB_DESCRIPTION='OpenWrt_x64_旁路由版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
