@@ -380,8 +380,4 @@ jobs:
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
           - 🎈 源码哈希值：${{ env.hash }}
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}# /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        delete_tag_pattern: _
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
