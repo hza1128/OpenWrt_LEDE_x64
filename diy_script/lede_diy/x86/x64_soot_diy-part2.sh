@@ -31,7 +31,7 @@ sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/file
 sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
 
 # 修改版本号
-sed -i "s/DISTRIB_DESCRIPTION=' *LEDE *'/DISTRIB_DESCRIPTION='OpenWrt_x64_精简版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
+sed -i "s/DISTRIB_DESCRIPTION=' *LEDE R24.10.24*'/DISTRIB_DESCRIPTION='OpenWrt_x64_精简版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
 
 # 设置ttyd免帐号登录
 sed -i 's/\/bin\/login/\/bin\/login -f root/' feeds/packages/utils/ttyd/files/ttyd.config
@@ -179,13 +179,13 @@ cp -f $GITHUB_WORKSPACE/personal/banner package/base-files/files/etc/banner
 # wget -O ./package/base-files/files/etc/banner https://raw.githubusercontent.com/Jejz168/OpenWrt/main/personal/banner
 
 # 固件更新地址
-sed -i '/CPU usage/a\                <tr><td width="33%"><%:Compile update%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
+sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件编译者%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
 cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
 
 msgid "GXNAS Blog"
 msgstr "固件编译者"
 EOF
-sed -i '/CPU usage/a\                <tr><td width="33%"><%:Compile update%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
+sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件出处%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
 cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
 
 msgid "Compile Downloads"
