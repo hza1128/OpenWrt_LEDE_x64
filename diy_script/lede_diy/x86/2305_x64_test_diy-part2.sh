@@ -1,7 +1,7 @@
 #!/bin/bash
 #===============================================
-# Description: DIY script part 2
-# File name: x64_2305_test_diy-part2.sh
+# Description: 2305_x64_test DIY script part 2
+# File name: 2305_x64_test_diy-part2
 # Lisence: MIT
 # By: GXNAS
 #===============================================
