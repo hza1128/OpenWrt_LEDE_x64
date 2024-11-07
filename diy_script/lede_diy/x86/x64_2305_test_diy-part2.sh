@@ -20,10 +20,10 @@ sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" ./package/base-files/files/b
 
 # 修改默认IP
 #sed -i 's/192.168.1.1/192.168.1.11/g' package/base-files/files/bin/config_generate
-sed -i 's#192.168.1.1#192.168.1.11#g' package/base-files/files/bin/config_generate
 
 # 设置旁路由模式
 cat >> package/lean/default-settings/files/zzz-default-settings <<-EOF
+uci set network.lan.ipaddr='192.168.1.11'                    # 旁路由设置本机IPv4地址
 uci set network.lan.gateway='192.168.1.1'                    # 旁路由设置 IPv4 网关
 uci set network.lan.dns='223.5.5.5 114.114.114.114'          # 旁路由设置 DNS(多个DNS要用空格分开)
 uci set dhcp.lan.ignore='1'                                  # 旁路由关闭DHCP功能
@@ -61,7 +61,7 @@ sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
 
 # 修改版本号
 #sed -i "s/DISTRIB_DESCRIPTION='*LEDE R24.10.24*'/DISTRIB_DESCRIPTION='OpenWrt_x64_测试版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
-sed -i 's/LEDE R24.10.24/OpenWrt_x64_2305_测试版 by GXNAS build @R$(date +%y.%m.%d) /' package/lean/default-settings/files/zzz-default-settings
+sed -i '/R24.10.24/c\OpenWrt_2305_x64_测试版 by GXNAS build @R$(date +%y.%m.%d)' package/lean/default-settings/files/zzz-default-settings
 
 # 设置ttyd免帐号登录
 sed -i 's/\/bin\/login/\/bin\/login -f root/' feeds/packages/utils/ttyd/files/ttyd.config
@@ -216,15 +216,9 @@ cp -f $GITHUB_WORKSPACE/personal/banner package/base-files/files/etc/banner
 # 固件更新地址
 sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件编译者%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
 cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
-
-msgid "GXNAS Blog"
-msgstr "固件编译者"
 EOF
 sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件出处%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
 cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
-
-msgid "Compile Downloads"
-msgstr "固件出处"
 EOF
 
 # 修改makefile
