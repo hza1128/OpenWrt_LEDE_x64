@@ -20,10 +20,10 @@ sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" ./package/base-files/files/b
 
 # 修改默认IP
 #sed -i 's/192.168.1.1/192.168.1.11/g' package/base-files/files/bin/config_generate
-sed -i 's#192.168.1.1#192.168.1.11#g' package/base-files/files/bin/config_generate
 
 # 设置旁路由模式
 cat >> package/lean/default-settings/files/zzz-default-settings <<-EOF
+uci set network.lan.ipaddr='192.168.1.11'                    # 旁路由设置 IPv4 网关
 uci set network.lan.gateway='192.168.1.1'                    # 旁路由设置 IPv4 网关
 uci set network.lan.dns='223.5.5.5 114.114.114.114'          # 旁路由设置 DNS(多个DNS要用空格分开)
 uci set dhcp.lan.ignore='1'                                  # 旁路由关闭DHCP功能
