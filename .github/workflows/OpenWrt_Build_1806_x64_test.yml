@@ -1,17 +1,17 @@
 #===============================================
-# Description: OpenWrt_Build_x64_test
+# Description: OpenWrt_Build_1806_x64_test
 # Lisence: MIT
 # By：GXNAS
 #===============================================
 
-name: OpenWrt_Build_x64_test
+name: OpenWrt_Build_1806_x64_test
 
 on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
       checkupdates66:
-        description: '启动OpenWrt_Build_x64_test编译'
+        description: '启动OpenWrt_Build_1806_x64_test编译'
         required: false
         default: 'true'
   #schedule:
@@ -24,14 +24,14 @@ env:
   CONFIG_FILE: config/lede_config/x64_test.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/diy-part1.sh
-  DIY_P2_SH: diy_script/lede_diy/x86/x64_test_diy-part2.sh
+  DIY_P2_SH: diy_script/lede_diy/x86/1806_x64_test_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: true
   UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: OpenWrt_Build_x64_test
+  FILE_NAME: OpenWrt_Build_1806_x64_test
   PRODUCT_NAME: x86_64
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
     env:
       REPO_URL_Lede: https://github.com/coolsnowwolf/lede
       REPO_BRANCH_Lede: master
-      REPO_PATH_Lede : "x64_test"
+      REPO_PATH_Lede : "1806_x64_test"
     outputs:
       output: ${{ steps.outputunifreq.outputs.unifreq }}
     steps:
@@ -49,19 +49,19 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL_Lede -b $REPO_BRANCH_Lede $REPO_PATH_Lede
         cd $REPO_PATH_Lede
-        echo "commitHash_x64_test=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        echo "commitHash_1806_x64_test=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         cd
 
     - name: Show Commit Head and Combination Heads
       id: combHeader
       run: |
-        echo "commitHash_x64_test: ${{ steps.getHash.outputs.commitHash_x64_test }}"
+        echo "commitHash_1806_x64_test: ${{ steps.getHash.outputs.commitHash_1806_x64_test }}"
 
     - name: Compare Commit Hash
       id: cacheHash
       uses: actions/cache@main
       with:
-        path: .commitHash_x64_test
+        path: .commitHash_1806_x64_test
         key: HEAD-${{ steps.getHash.outputs.commitHash_x64_test }}
 
     - name: Set output for next job
@@ -73,9 +73,9 @@ jobs:
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
-        echo ${{ steps.getHash.outputs.commitHash_x64_test }} | tee .commitHash_x64_test
+        echo ${{ steps.getHash.outputs.commitHash_1806_x64_test }} | tee .commitHash_1806_x64_test
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_test:
+  Build_1806_x64_test:
     needs: [CheckRepo]
     if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
@@ -275,7 +275,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_Build_x64_test.config
+        name: OpenWrt_Build_1806_x64_test.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -350,7 +350,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 【OpenWrt_Build_x64_test】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_1806_x64_test】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -369,7 +369,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 【OpenWrt_Build_x64_test】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_1806_x64_test】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
