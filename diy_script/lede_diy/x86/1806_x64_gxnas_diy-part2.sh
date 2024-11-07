@@ -19,10 +19,11 @@ sed -i "/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-GXNAS'"
 sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" ./package/base-files/files/bin/config_generate
 
 # 修改默认IP
-sed -i 's#192.168.1.1#192.168.1.11#g' package/base-files/files/bin/config_generate
+#sed -i 's#192.168.1.1#192.168.1.11#g' package/base-files/files/bin/config_generate
 
 # 设置旁路由模式
 cat >> package/lean/default-settings/files/zzz-default-settings <<-EOF
+uci set network.lan.ipaddr='192.168.1.11'                    # 旁路由本机 IPv4 地址
 uci set network.lan.gateway='192.168.1.1'                    # 旁路由设置 IPv4 网关
 uci set network.lan.dns='223.5.5.5 114.114.114.114'          # 旁路由设置 DNS(多个DNS要用空格分开)
 uci set dhcp.lan.ignore='1'                                  # 旁路由关闭DHCP功能
@@ -59,8 +60,7 @@ sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/file
 sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
 
 # 修改版本号
-#sed -i "s/DISTRIB_DESCRIPTION='*LEDE R24.10.24*'/DISTRIB_DESCRIPTION='OpenWrt_1806_x64_旁路由版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
-sed -i '/R24.10.24/c\OpenWrt_1806_x64_旁路由版 by GXNAS build @R$(date +%y.%m.%d)' package/lean/default-settings/files/zzz-default-settings
+sed -i "s/DISTRIB_DESCRIPTION='*'/DISTRIB_DESCRIPTION='OpenWrt_1806_x64_旁路由版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
 
 # 设置ttyd免帐号登录
 sed -i 's/\/bin\/login/\/bin\/login -f root/' feeds/packages/utils/ttyd/files/ttyd.config
