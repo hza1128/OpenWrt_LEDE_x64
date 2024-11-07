@@ -1,7 +1,7 @@
 #!/bin/bash
 #===============================================
-# Description: DIY script part 2
-# File name: x64_all_diy-part2.sh
+# Description: 1806_x64_all DIY script part 2
+# File name: 1806_x64_all_diy-part2.sh
 # Lisence: MIT
 # By: GXNAS
 #===============================================
