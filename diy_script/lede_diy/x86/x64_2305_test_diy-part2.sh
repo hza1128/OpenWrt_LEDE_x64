@@ -205,9 +205,10 @@ sed -i 's|<a href="https://github.com/jerrykuku/luci-theme-argon" target="_blank
 # 显示增加编译时间
 #sed -i "s/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%>/<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> (By @GXNAS build $(TZ=UTC-8 date "+%Y-%m-%d %H:%M"))/g" package/lean/autocore/files/x86/index.htm
 echo "package/base-files/files/etc/openwrt_release："
+echo "默认的package/base-files/files/etc/openwrt_release 配置文件内容如下："
 cat package/base-files/files/etc/openwrt_release
 echo "修改主机名字后，package/base-files/files/etc/openwrt_release 配置文件内容如下："
-sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION='OpenWrt_x64_全功能版 by GXNAS build @R$(date +%y.%m.%d)'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION='OpenWrt_2305_x64_测试版 by GXNAS build @R$(date +%y.%m.%d)'/g" package/base-files/files/etc/openwrt_release
 cat package/base-files/files/etc/openwrt_release
 
 # 修改概览里时间显示为中文数字
