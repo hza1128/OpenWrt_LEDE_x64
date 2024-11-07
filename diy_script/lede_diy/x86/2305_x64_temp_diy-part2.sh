@@ -208,7 +208,7 @@ echo "package/base-files/files/etc/openwrt_release："
 echo "默认的package/base-files/files/etc/openwrt_release 配置文件内容如下："
 cat package/base-files/files/etc/openwrt_release
 echo "修改主机名字后，package/base-files/files/etc/openwrt_release 配置文件内容如下："
-sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION='OpenWrt_2305_x64_测试版 by GXNAS build @R$(date +%y.%m.%d)'/g" package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_REVISION=.*/DISTRIB_REVISION='OpenWrt_2305_x64_临时版 by GXNAS build @R$(date +%y.%m.%d)'/g" package/base-files/files/etc/openwrt_release
 cat package/base-files/files/etc/openwrt_release
 
 # 修改概览里时间显示为中文数字
