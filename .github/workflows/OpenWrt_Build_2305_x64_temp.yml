@@ -1,10 +1,10 @@
 #===============================================
-# Description: OpenWrt_Build_x64_temp
+# Description: OpenWrt_Build_2305_x64_temp
 # Lisence: MIT
 # By：GXNAS
 #===============================================
 
-name: OpenWrt_Build_x64_temp
+name: OpenWrt_Build_2305_x64_temp
 
 on:
   repository_dispatch:
@@ -33,17 +33,17 @@ env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
   FEEDS_CONF: feeds_config/lede23.feeds.conf.default
-  CONFIG_FILE: config/lede_config/x64_temp.config
+  CONFIG_FILE: config/lede_config/2305_x64_temp.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/diy-part1.sh
-  DIY_P2_SH: diy_script/lede_diy/x86/x64_temp_diy-part2.sh
+  DIY_P2_SH: diy_script/lede_diy/x86/2305_x64_temp_diy-part2.sh
   CLASH_KERNEL: amd64
   UPLOAD_BIN_DIR: false
   UPLOAD_CONFIG: false
   UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: OpenWrt_Build_x64_temp
+  FILE_NAME: OpenWrt_Build_2305_x64_temp
   PRODUCT_NAME: x86-64
 
 jobs:
@@ -52,7 +52,7 @@ jobs:
     env:
       REPO_URL_Lede: https://github.com/coolsnowwolf/lede
       REPO_BRANCH_Lede: master
-      REPO_PATH_Lede : "x64_temp"
+      REPO_PATH_Lede : "2305_x64_temp"
     outputs:
       output: ${{ steps.outputunifreq.outputs.unifreq }}
     steps:
@@ -61,20 +61,20 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL_Lede -b $REPO_BRANCH_Lede $REPO_PATH_Lede
         cd $REPO_PATH_Lede
-        echo "commitHash_x64_temp=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        echo "commitHash_2305_x64_temp=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         cd
 
     - name: Show Commit Head and Combination Heads
       id: combHeader
       run: |
-        echo "commitHash_x64_temp: ${{ steps.getHash.outputs.commitHash_x64_temp }}"
+        echo "commitHash_2305_x64_temp: ${{ steps.getHash.outputs.commitHash_2305_x64_temp }}"
 
     - name: Compare Commit Hash
       id: cacheHash
       uses: actions/cache@main
       with:
-        path: .commitHash_x64_temp
-        key: HEAD-${{ steps.getHash.outputs.commitHash_x64_temp }}
+        path: .commitHash_2305_x64_temp
+        key: HEAD-${{ steps.getHash.outputs.commitHash_2305_x64_temp }}
 
     - name: Set output for next job
       id: outputunifreq
@@ -85,9 +85,9 @@ jobs:
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
-        echo ${{ steps.getHash.outputs.commitHash_x64_temp }} | tee .commitHash_x64_temp
+        echo ${{ steps.getHash.outputs.commitHash_2305_x64_temp }} | tee .commitHash_2305_x64_temp
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_54:
+  Build_2305_x64_temp_54:
     needs: [CheckRepo]
     if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates54 == 'true'}}
     runs-on: ubuntu-22.04
@@ -297,7 +297,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_Build_x64_temp.config
+        name: OpenWrt_Build_2305_x64_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -372,7 +372,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -391,7 +391,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -404,7 +404,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_515:
+  Build_2305_x64_temp_515:
     needs: [CheckRepo]
     if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates515 == 'true'}}
     runs-on: ubuntu-22.04
@@ -612,7 +612,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_Build_x64_temp.config
+        name: OpenWrt_Build_2305_x64_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -687,7 +687,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -706,7 +706,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -719,7 +719,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_61X:
+  Build_2305_x64_temp_61X:
     needs: [CheckRepo]
     if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates61 == 'true'}}
     runs-on: ubuntu-22.04
@@ -929,7 +929,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_Build_x64_temp.config
+        name: OpenWrt_Build_2305_x64_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -1004,7 +1004,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1023,7 +1023,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1036,7 +1036,7 @@ jobs:
           - 🎈 源码哈希值：${{ env.hash }}
           https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
 # //////////////////////////////////////////////////////////////////////////////////////////////
-  Build_x64_temp_66X:
+  Build_2305_x64_temp_66X:
     needs: [CheckRepo]
     if: ${{ needs.CheckRepo.outputs.output != 'hello' || github.event.inputs.checkupdates66 == 'true'}}
     runs-on: ubuntu-22.04
@@ -1244,7 +1244,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_Build_x64_temp.config
+        name: OpenWrt_Build_2305_x64_temp.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
@@ -1319,7 +1319,7 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -1338,7 +1338,7 @@ jobs:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 【OpenWrt_Build_x64_temp】项目编译完成 ♨️
+          ♨️ 【OpenWrt_Build_2305_x64_temp】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
