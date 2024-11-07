@@ -219,12 +219,12 @@ cp -f $GITHUB_WORKSPACE/personal/banner package/base-files/files/etc/banner
 # wget -O ./package/base-files/files/etc/banner https://raw.githubusercontent.com/Jejz168/OpenWrt/main/personal/banner
 
 # 固件更新地址
-sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件编译者%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
-cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
-EOF
-sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件出处%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
-cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
-EOF
+# sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件编译者%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
+# cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
+# EOF
+# sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件出处%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
+# cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
+# EOF
 
 # 修改makefile
 find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/include\ \.\.\/\.\.\/luci\.mk/include \$(TOPDIR)\/feeds\/luci\/luci\.mk/g' {}
