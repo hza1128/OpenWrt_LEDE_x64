@@ -15,8 +15,16 @@ source $GITHUB_WORKSPACE/diy_script/function.sh
 rm -rf package/custom; mkdir package/custom
 
 # 修改主机名字，修改你喜欢的就行（不能纯数字或者使用中文）
+echo "默认的zzz-default-settings配置文件内容为："
+cat package/lean/default-settings/files/zzz-default-settings
+echo "优化后的zzz-default-settings配置文件内容为："
 sed -i "/uci commit system/i\uci set system.@system[0].hostname='OpenWrt-GXNAS'" package/lean/default-settings/files/zzz-default-settings
-sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" ./package/base-files/files/bin/config_generate
+cat package/lean/default-settings/files/zzz-default-settings
+echo "默认的config_generate配置文件内容为："
+cat package/base-files/files/bin/config_generate
+echo "config_generate配置文件内容为："
+sed -i "s/hostname='.*'/hostname='OpenWrt-GXNAS'/g" package/base-files/files/bin/config_generate
+cat package/base-files/files/bin/config_generate
 
 # 修改默认IP
 #sed -i 's/192.168.1.1/192.168.1.11/g' package/base-files/files/bin/config_generate
