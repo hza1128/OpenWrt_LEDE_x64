@@ -211,15 +211,9 @@ cp -f $GITHUB_WORKSPACE/personal/banner package/base-files/files/etc/banner
 # 固件更新地址
 sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件编译者%></td><td><a target="_blank" href="https://wp.gxnas.com/">🌐【GXNAS博客】https://wp.gxnas.com</a></td></tr>'  package/lean/autocore/files/x86/index.htm
 cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
-
-msgid "GXNAS Blog"
-msgstr "固件编译者"
 EOF
 sed -i '/CPU usage/a\                <tr><td width="33%"><%:固件出处%></td><td><a target="_blank" href="https://d.gxnas.com/">👆点这里下载最新版本</a></td></tr>'  package/lean/autocore/files/x86/index.htm
 cat >>feeds/luci/modules/luci-base/po/zh-cn/base.po<<- EOF
-
-msgid "Compile Downloads"
-msgstr "固件出处"
 EOF
 
 # 修改makefile
