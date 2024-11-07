@@ -68,8 +68,7 @@ sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/file
 sed -i 's/OpenWrt/OpenWrt-GXNAS/g' package/base-files/files/bin/config_generate
 
 # 修改版本号
-#sed -i "s/DISTRIB_DESCRIPTION='*LEDE R24.10.24*'/DISTRIB_DESCRIPTION='OpenWrt_1806_x64_测试版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
-sed -i 's/LEDE R24.10.24/OpenWrt_1806_x64_测试版 by GXNAS build @R$(date +%y.%m.%d) /' package/lean/default-settings/files/zzz-default-settings
+sed -i "s/DISTRIB_DESCRIPTION='*'/DISTRIB_DESCRIPTION='OpenWrt_1806_x64_测试版 by GXNAS build @R$(date +%y.%m.%d) '/" package/lean/default-settings/files/zzz-default-settings
 
 # 设置ttyd免帐号登录
 sed -i 's/\/bin\/login/\/bin\/login -f root/' feeds/packages/utils/ttyd/files/ttyd.config
