@@ -1,7 +1,7 @@
 #===============================================
 # Description: OpenWrt_Build_1806_x64_test
 # Lisence: MIT
-# By：GXNAS
+# By：test
 #===============================================
 
 name: OpenWrt_Build_1806_x64_test
@@ -14,13 +14,13 @@ on:
         description: '启动OpenWrt_Build_1806_x64_test编译'
         required: false
         default: 'true'
-  #schedule:
-    #- cron: 0 2 * * 5
+  schedule:
+    - cron: 0 2 * * 5
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  FEEDS_CONF: feeds_config/lede23.feeds.conf.default
+  FEEDS_CONF: feeds_config/lede.feeds.conf.default
   CONFIG_FILE: config/lede_config/1806_x64_test.config
   CONFIGS: config/lede_config
   DIY_P1_SH: diy_script/lede_diy/x86/1806_x64_diy-part1.sh
@@ -49,20 +49,20 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL_Lede -b $REPO_BRANCH_Lede $REPO_PATH_Lede
         cd $REPO_PATH_Lede
-        echo "commitHash_1806_x64_test=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        echo "commitHash_x86=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         cd
 
     - name: Show Commit Head and Combination Heads
       id: combHeader
       run: |
-        echo "commitHash_1806_x64_test: ${{ steps.getHash.outputs.commitHash_1806_x64_test }}"
+        echo "commitHash_x86: ${{ steps.getHash.outputs.commitHash_x86 }}"
 
     - name: Compare Commit Hash
       id: cacheHash
       uses: actions/cache@main
       with:
-        path: .commitHash_1806_x64_test
-        key: HEAD-${{ steps.getHash.outputs.commitHash_x64_test }}
+        path: .commitHash_x86
+        key: HEAD-${{ steps.getHash.outputs.commitHash_x86 }}
 
     - name: Set output for next job
       id: outputunifreq
@@ -73,7 +73,7 @@ jobs:
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
-        echo ${{ steps.getHash.outputs.commitHash_1806_x64_test }} | tee .commitHash_1806_x64_test
+        echo ${{ steps.getHash.outputs.commitHash_x86 }} | tee .commitHash_x86
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////
   Build_1806_x64_test:
     needs: [CheckRepo]
@@ -268,19 +268,19 @@ jobs:
       uses: actions/upload-artifact@main
       if: env.UPLOAD_BIN_DIR == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_bin-${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Upload config
       uses: actions/upload-artifact@main
       if: env.UPLOAD_CONFIG == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: OpenWrt_Build_1806_x64_test.config
+        name: OpenWrt_1806_x64_test.config
         path: ./artifact/buildinfo/
 
     - name: Delete files
       run: |
-        cd openwrt
+        cd openwrt 
         bash  rename.sh
         Kernel=`grep "_uefi.img.gz" wget/open_dev_md5 | cut -d - -f 2 | cut -d _ -f 2 `
         echo "KERNEL=$Kernel" >> $GITHUB_ENV
@@ -315,9 +315,10 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success'
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
+        name: OpenWrt_1806_x64_test
         allowUpdates: true
-        tag: ${{ env.FILE_NAME }}-${{ env.KERNEL }}
+        removeArtifacts: true
+        tag: OpenWrt_1806_x64_test
         token: ${{ secrets.GH_TOKEN }}
         body: |
           ### 📒 固件信息
@@ -344,13 +345,13 @@ jobs:
         HMS=`echo ${hour}:${min}:${sec}`
         echo "time=$HMS" >> $GITHUB_ENV
 
-    - name: Telegram notification upload success
+    - name: Telegram notification upload success_54
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
-          ♨️ 【OpenWrt_Build_1806_x64_test】项目编译完成 ♨️
+          ♨️ 【OpenWrt_1806_x64_test】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -361,15 +362,15 @@ jobs:
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
           - 🎈 源码哈希值：${{ env.hash }}
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_1806_x64_test
 
-    - name: Push notification upload success
+    - name: Push notification upload success_54
       uses: xhnmt/pushplus-action@main
       with:
         token: ${{ secrets.PUSH_PLUS_TOKEN }}
         title: "${{ env.FILE_NAME }}-${{ env.KERNEL }}编译完成"
         content: |
-          ♨️ 【OpenWrt_Build_1806_x64_test】项目编译完成 ♨️
+          ♨️ 【OpenWrt_1806_x64_test】项目编译完成 ♨️
           - ❀  固件名称：${{ env.FILE_NAME }}-${{ env.KERNEL }}
           - 🔴 固件大小：Kernel=32M，rootfs=968M
           - 💻 平台架构: ${{ env.PRODUCT_NAME }}
@@ -380,4 +381,4 @@ jobs:
           - 🔑 默认密码：无密码
           - 🧊 更新时间：${{ env.date }}
           - 🎈 源码哈希值：${{ env.hash }}
-          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/${{ env.FILE_NAME }}-${{ env.KERNEL }}
+          https://github.com/3092099/OpenWrt_Build_x64/releases/tag/OpenWrt_x64_test
